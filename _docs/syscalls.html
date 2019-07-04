@@ -24,8 +24,8 @@
             <li>On failure: [nil] nil, [number] Failure Code</li>
         </ul>
 
-        <h2>sys.add_device([string] name, [function] open_cb, [function] ioctl_cb)</h2>
-        <p>Adds a device to the device list. The device will appear inside of <i>/dev/</i>. If the name starts with /dev/, it will ignore the first 5 chars. open_cb argument function will get called when the device file has been opened: this function MUST return a table with functions like read, write, etc. ioctl_cb argument function will get called on every ioctl request, ioctl requests follow the format of [string] value, ... args. First argument of every function is self (so you have to do function(self, arg1, arg2) instead of function(arg1, arg2) )</p>
+        <h2>sys.add_device([string] name, [function] open_cb)</h2>
+        <p>Adds a device to the device list. The device will appear inside of <i>/dev/</i>. If the name starts with /dev/, it will ignore the first 5 chars. open_cb argument function will get called when the device file has been opened: this function MUST return a table with functions like read, write, etc. First argument of every function is self (so you have to do function(self, arg1, arg2) instead of function(arg1, arg2) )</p>
 
         <h2>sys.mark_device([string] name, [string] type)</h2>
         <p>Marks a device as a specified (for example hdd for hard drives) type. If the name starts with /dev/, it will ignore the first 5 chars. This is mostly used in auto-configuration of devices.</p>

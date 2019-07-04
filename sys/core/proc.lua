@@ -77,6 +77,7 @@ function sys.process_create(path, args, dir, sec_assoc)
                 dir    = dir,
                 parent = c_pid,
                 threads = {cout},
+                next_thread_id = 2,
                 stdin  = stdin,
                 stdout = stdout,
                 stderr = stderr,
@@ -142,6 +143,7 @@ function sys.process_get_info(pid)
         if not aex_int.processes[pid] then return nil end
         local dat = table.copy(aex_int.processes[pid])
         dat.threads = nil
+        dat.next_thread_id = nil
         return dat
     end
 end
@@ -153,9 +155,42 @@ function sys.thread_create(func)
     local c_pid = sys.get_running_pid()
 
     if c_pid == 0 then
-        aex_int.threads_k[#aex_int.threads_k + 1] = coroutify(func)
-        return
+        aex_int.next_thread_k_id = aex_int.next_thread_k_id + 1
+        local id = aex_int.next_thread_k_id
+
+        aex_int.threads_k[id] = coroutify(func)
+        return {
+            abort = function(self)
+                aex_int.threads_k[id] = nil
+            end,
+            wait = function()
+                while aex_int.threads_k[id] do waitOne() end
+                return true
+            end,
+            isAlive = function()
+                return not not aex_int.threads_k[pid]
+            end,
+        }
     end
+    local c_pid = sys.get_running_pid()
+    local process = aex_int.processes[c_pid]
+
+    process.next_thread_id = process.next_thread_id + 1
+    local id = process.next_thread_id
+
+    process.threads[id] = coroutify(func)
+    return {
+        abort = function(self)
+            process.threads[id] = nil
+        end,
+        wait = function()
+            while process.threads[id] do waitOne() end
+            return true
+        end,
+        isAlive = function()
+            return not not process.threads[id]
+        end,
+    }
 end
 
 function aex_int.proc.begin_task_loop()

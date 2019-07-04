@@ -11,6 +11,7 @@ local aex_int = {
     mounts    = {},
     processes = {},
     threads_k = {},
+    next_thread_k_id = 1,
 }
 local boot_kind = boot.kind
 
