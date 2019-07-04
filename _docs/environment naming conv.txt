@@ -1,0 +1,4 @@
+[program/game/lib]_[architecture]_[extra]
+Examples:
+gmod_rh_sf
+net_rh_emu

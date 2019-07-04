@@ -1,0 +1,12 @@
+[string] full_name
+[string] name
+[string] provider
+[string] version
+[string] description
+
+[bool] can_disable
+
+[function] load()
+[function] unload()
+[function] enable()
+[function] disable()

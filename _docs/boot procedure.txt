@@ -1,0 +1,23 @@
+[BOOTLOADER]
+1. Create boot table
+2. Declare architecture-dependent boot.readFile(string)
+3. Store boot drive index in boot.boot_drive_id (enumeration must start at index 1)
+4. Load kernel
+4.5. [ Optional ] Do any environment-dependent initialization
+5. Run kernel 
+
+[KERNEL]
+1. Init tty0
+2. HAL
+3. Execute an envinit.e (.early) .lib for the things our HAL can't solve (if exists)
+4. Add /dev/tty0
+5. Load fs core module
+6. Mount /
+7. Load other modules
+8. Execute an envinit.p (.post) .lib for the things our HAL can't solve (if exists)
+9. Register input device(s)
+10. Execute preinit
+ - Check if we need to verify
+11. Start aexinit/aexvrfy
+ - Bind I/O to /dev/tty0
+12. Begin task switching

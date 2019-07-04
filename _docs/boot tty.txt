@@ -1,0 +1,4 @@
+The boot terminal (tty0) table must return these functions:
+write(string)
+writeln(string)
+clear()

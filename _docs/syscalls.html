@@ -1,0 +1,170 @@
+<html>
+    <head>
+        <title>AEXLite - Syscalls</title>
+        <style>
+            h1, h2, h3, h4, h5, h6, p, li {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+            h1, h2, h3, h4, h5, h6 {
+                font-weight: 300;
+            }
+            h4 {
+                margin-bottom: 4px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>AEXLite Syscalls</h1>
+
+        <h2>sys.get_internal_table()</h2>
+        <p>Requests access to the internal table used by most internal AEX components/services/whatever. In the booting stage any permission checks are skipped, however, after the system finishes booting, the executing thread must be root to access the internal table (read: be running in an root-user process).</p>
+        <h4>Returns:</h4>
+        <ul>
+            <li>On success: [table] Internal Table</li>
+            <li>On failure: [nil] nil, [number] Failure Code</li>
+        </ul>
+
+        <h2>sys.add_device([string] name, [function] open_cb, [function] ioctl_cb)</h2>
+        <p>Adds a device to the device list. The device will appear inside of <i>/dev/</i>. If the name starts with /dev/, it will ignore the first 5 chars. open_cb argument function will get called when the device file has been opened: this function MUST return a table with functions like read, write, etc. ioctl_cb argument function will get called on every ioctl request, ioctl requests follow the format of [string] value, ... args. First argument of every function is self (so you have to do function(self, arg1, arg2) instead of function(arg1, arg2) )</p>
+
+        <h2>sys.mark_device([string] name, [string] type)</h2>
+        <p>Marks a device as a specified (for example hdd for hard drives) type. If the name starts with /dev/, it will ignore the first 5 chars. This is mostly used in auto-configuration of devices.</p>
+
+        <h2>sys.get_running_pid()</h2>
+        <p>Gets the currently running process's id.</p>
+        <h4>Returns:</h4>
+        <ul>
+            <li>[number] Process ID</li>
+        </ul>
+
+        <h2>sys.reset()</h2>
+        <p>Resets the machine.</p>
+        
+        <h2>sys.fs_open([string] path, [string] mode)</h2>
+        <p>Opens a file from the virtual filesystem. Normally, this returns a <a href="https://add.the.goddamned.reference.jesus">file descriptor object</a>, but in the case of devices the object can differ in specific ways (for example, HDD's have no :read() and :write(), but instead they have :fileRead() and :fileWrite()). To differentiate between various types of devices you should use the 'type' field. The <i>mode</i> argument has only any effect when opening an actual file. If the <i>mode</i> argument is not specified, it will default to <i>r</i>.</p>
+        <h4>Modes</h4>
+        <ul>
+            <li>r - Read</li>
+            <li>w - Write</li>
+            <li>a - Append</li>
+        </ul>
+        <h4>Returns:</h4>
+        <ul>
+            <li>On success: [table] File Descriptor</li>
+            <li>On failure: [nil] nil, [number] Failure Code</li>
+        </ul>
+
+        <h2>sys.fs_exists([string] path)</h2>
+        <p>Checks if a file exists.</p>
+        <h4>Returns:</h4>
+        <ul>
+            <li>Bool that is true if the file exists</li>
+        </ul>
+
+        <h2>sys.fs_list([string] path)</h2>
+        <p>Lists a directory</p>
+        <h4>Returns:</h4>
+        <ul>
+            <li>On success: [table] <a href="https://add.the.goddamned.reference.jesus">Directory listing</a></li>
+            <li>On failure: [nil] nil, [number] Failure Code</li>
+        </ul>
+
+        <h2>sys.fs_delete([string] path)</h2>
+        <p>Deletes a file/directory</p>
+        <h4>Returns:</h4>
+        <ul>
+            <li>On success: [bool] true</li>
+            <li>On failure: [nil] nil, [number] Failure Code</li>
+        </ul>
+
+        <h2>sys.fs_mkdir([string] path)</h2>
+        <p>Creates a directory.</p>
+        <h4>Returns:</h4>
+        <ul>
+            <li>On success: [bool] true</li>
+            <li>On failure: [nil] nil, [number] Failure Code</li>
+        </ul>
+
+        <h2>sys.fs_mount([string] dev_path, [string] mount_path)</h2>
+        <p>Mounts a device in the specified directory. dev_path must start with /dev/</p>
+        <h4>Returns:</h4>
+        <ul>
+            <li>On success: [bool] true</li>
+            <li>On failure: [nil] nil, [number] Failure Code</li>
+        </ul>
+
+        <h2>sys.process_create([string] path, [ [table] args, [string] work_dir, [string] sec_assoc ])</h2>
+        <p>Creates a process. Keep in mind that a process needs to be started with the :Start() method in the Process Control Object</p>
+        <h4>Returns:</h4>
+        <ul>
+            <li>On success: [table] <a href="https://add.the.goddamned.reference.jesus">Process control object</a></li>
+            <li>On failure: [nil] nil, [number] Failure Code or [string] Error</li>
+        </ul>
+
+        <h2>sys.process_get_info([ [number] pid ])</h2>
+        <p>Returns information about a process or the process currently running if no pid was specified.</p>
+        <h4>Returns:</h4>
+        <ul>
+            <li>On success: [table] Process Data</li>
+            <li>On failure: [nil] nil, [number] Failure Code</li>
+        </ul>
+
+        <h2>sys.thread_create([function] function)</h2>
+        <p>Creates a thread. A thread starts immediately.</p>
+        <h4>Returns:</h4>
+        <ul>
+            <li>[table] <a href="https://add.the.goddamned.reference.jesus">Thread control object</a></li>
+        </ul>
+
+        <h2>sys.input_add_device([string] name)</h2>
+        <p>Adds an input device (these don't appear in /dev/ but /dev/input/).</p>
+        <h4>Returns:</h4>
+        <ul>
+            <li>[table] <a href="https://add.the.goddamned.reference.jesus">Input event triggerer object</a></li>
+        </ul>
+
+        <h2>sys.input_get_keys()</h2>
+        <p>Returns currently pressed keys transformed by keys like control and alt.</p>
+        <h4>Returns:</h4>
+        <ul>
+            <li>[table] Table of every pressed keys' bytes</li>
+        </ul>
+
+        <h2>sys.input_get_keys_raw()</h2>
+        <p>Returns currently pressed keys including control and alt.</p>
+        <h4>Returns:</h4>
+        <ul>
+            <li>[table] Table of every pressed keys' bytes</li>
+        </ul>
+
+        <h2>sys.sec_user_exists([string] user)</h2>
+        <p>Checks if an user account exists.</p>
+        <h4>Returns:</h4>
+        <ul>
+            <li>[bool] True if the user exists</li>
+        </ul>
+
+        <h2>sys.sec_add_user([string] user, [string] password)</h2>
+        <p>Adds an user account. To add an account without a password, pass a nil or '' as the password argument.</p>
+        <h4>Returns:</h4>
+        <ul>
+            <li>On success: [bool] true</li>
+            <li>On failure: [nil] nil, [number] Failure Code</li>
+        </ul>
+
+        <h2>sys.set_hostname([string] new_hostname)</h2>
+        <p>Sets the hostname.</p>
+        <h4>Returns:</h4>
+        <ul>
+            <li>On success: [bool] true</li>
+            <li>On failure: [nil] nil, [number] Failure Code</li>
+        </ul>
+
+        <h2>sys.get_hostname()</h2>
+        <p>Gets the hostname.</p>
+        <h4>Returns:</h4>
+        <ul>
+            <li>[string] Hostname</li>
+        </ul>
+    </body>
+</html>
