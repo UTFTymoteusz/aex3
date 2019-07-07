@@ -12,23 +12,52 @@ local dir_create  = hal.hdd.dir_create
 
 local devid = 0
 
-for _, id in pairs(hal.hdd.get_all_ids()) do
+local driver = {}
 
-    if id == boot.drive_id then
-        boot.drive_name = '/dev/hdd' .. devid
+local function enable()
+
+    for _, id in pairs(hal.hdd.get_all_ids()) do
+
+        if id == boot.drive_id then
+            boot.drive_name = '/dev/hdd' .. devid
+        end
+        sys.add_device('hdd' .. devid, function()
+            return {
+                fileRead   = function(self, path)       return file_read(id,   path) end,
+                fileExists = function(self, path)       return file_exists(id, path) end,
+                fileWrite  = function(self, path, data) return file_write(id,  path, data) end,
+                fileList   = function(self, path)       return file_list(id,   path) end,
+                fileDelete = function(self, path)       return file_delete(id, path) end,
+                dirCreate  = function(self, path)       return dir_create(id,  path) end,
+            }
+        end)
+        sys.mark_device('hdd' .. devid, 'hdd')
+        sys.drvmgr_claim('hdd' .. devid, driver)
+    
+        devid = devid + 1
+        ::xcontinue::
     end
-    sys.add_device('hdd' .. devid, function()
-        return {
-            fileRead   = function(self, path)       return file_read(id,   path) end,
-            fileExists = function(self, path)       return file_exists(id, path) end,
-            fileWrite  = function(self, path, data) return file_write(id,  path, data) end,
-            fileList   = function(self, path)       return file_list(id,   path) end,
-            fileDelete = function(self, path)       return file_delete(id, path) end,
-            dirCreate  = function(self, path)       return dir_create(id,  path) end,
-        }
-    end)
-    sys.mark_device('hdd' .. devid, 'hdd')
-
-    devid = devid + 1
-    ::xcontinue::
 end
+
+driver.full_name = 'HDD Hub Driver'
+driver.name = 'hddh'
+driver.type = 'hub'
+driver.provider = 'Tymkboi'
+driver.version  = '1.0'
+driver.disallow_disable = true
+
+function driver.load()
+
+end
+function driver.unload()
+
+end
+function driver.enable()
+    enable()
+    return true
+end
+function driver.disable()
+    return false
+end
+
+return driver

@@ -1,0 +1,5 @@
+if len is null then return as much as we have at hand
+if we don't have any, delay until we have atleast something
+otherwise if len is not null, return as much as they want. 
+If we don't have that much at hand, delay until we have
+If we don't have that much and we can't get more, return an empty string

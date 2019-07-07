@@ -8,6 +8,18 @@ if not file then
         io.write(io.read())
     end
 else
-    local s, r = fs.read(file)
-    stderr:writeln(s and s or 'cat: ' .. file .. ': ' .. res.translate(r))
+    local s, r = fs.open(file)
+    if not s then
+        stderr:writeln('cat: ' .. file .. ': ' .. res.translate(r))
+        return
+    end
+
+    local a = ''
+    while true do
+        a = s:read()
+        if #a == 0 then break end
+
+        stdout:write(a)
+        waitOne()
+    end
 end

@@ -49,5 +49,68 @@ if boot_kind == 'net_rh_emu' then
         beep = function(freq, len)
             rh:Beep(freq, len)
         end,
+        time = function()
+            return os.clock()
+        end,
+    }
+elseif boot_kind == 'gmod_rh_sf' then
+    local drives = {}
+
+    for k, v in pairs(chipset.Components.SATA) do
+        if v then
+            drives[k] = v
+        end
+    end
+    local drive
+    hal.hdd = {
+        file_read = function(id, path)
+            drive = drives[id]
+            return (hook.runRemote(drive[1], 'hddaccess', drive[2], 0, path)[1] or {})[1]
+        end,
+        file_exists = function(id, path)
+            drive = drives[id]
+            return (hook.runRemote(drive[1], 'hddaccess', drive[2], 2, path)[1] or {})[1]
+        end,
+        file_write = function(id, path, data)
+            drive = drives[id]
+            return (hook.runRemote(drive[1], 'hddaccess', drive[2], 1, path, data)[1] or {})[1]
+        end,
+        file_list = function(id, path)
+            drive = drives[id]
+            local a = (hook.runRemote(drive[1], 'hddaccess', drive[2], 3, path)[1] or {})[1]
+            if type(a) ~= 'table' then return nil end
+            
+            local ent = {}
+            for k, v in pairs(a) do
+                ent[#ent + 1] = {
+                    name = k,
+                    type = v[1],
+                }
+            end
+            return ent
+        end,
+        file_delete = function(id, path)
+            drive = drives[id]
+            return (hook.runRemote(drive[1], 'hddaccess', drive[2], 4, path)[1] or {})[1]
+        end,
+        dir_create = function(id, path)
+            drive = drives[id]
+            return (hook.runRemote(drive[1], 'hddaccess', drive[2], 5, path)[1] or {})[1]
+        end,
+        get_all_ids = function()
+            return table.getKeys(drives)
+        end,
+    }
+    local start = timer.systime()
+    hal.core = {
+        reset = function()
+            cpu.reset()
+        end,
+        beep = function(freq, len)
+            rh:Beep(freq, len)
+        end,
+        time = function()
+            return timer.systime() - start
+        end,
     }
 end

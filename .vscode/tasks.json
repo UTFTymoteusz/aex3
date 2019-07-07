@@ -4,9 +4,15 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "build net_rh_emu",
             "type": "shell",
             "command": "start powershell {& cd 'C:/Users/tymot/Source/Repos/rH Lua Container/rH Lua Container/bin/Debug'; & 'C:/Users/tymot/Source/Repos/rH Lua Container/rH Lua Container/bin/Debug/rH Lua Container.exe' ; Read-Host}",
+            "group": "build"
+        },
+        {
+            "label": "build gmod_rh_sf",
+            "type": "shell",
+            "command": "./_build/aexbuild",
             "group": {
                 "kind": "build",
                 "isDefault": true

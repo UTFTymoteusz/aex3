@@ -44,7 +44,7 @@ function sys.process_create(path, args, dir, sec_assoc)
 
     local stdin, stdout, stderr = io.getGenericStream(), io.getGenericStream(), io.getGenericStream()
     local p_s = string.split(path, '/')
-        
+
     local cout = coroutify(func, function(err) stderr:write(tostring(err), '\r\n') end, pid)
 
     local user
@@ -69,7 +69,7 @@ function sys.process_create(path, args, dir, sec_assoc)
         start = function()
             if started then return end
             started = true
-            
+
             aex_int.processes[pid] = {
                 name   = p_s[#p_s],
                 user   = user,
@@ -109,7 +109,7 @@ function sys.process_replace(path, args, dir, sec_assoc)
     else setfenv(func, env) end
 
     local p_s = string.split(path, '/')
-        
+
     local cout = coroutify(func, function(err) aex_int.processes[c_pid].stderr:write(tostring(err), '\r\n') end)
 
     local user
@@ -198,40 +198,34 @@ function aex_int.proc.begin_task_loop()
     while true do
         current_pid = 0
         for k, v in pairs(aex_int.threads_k) do
-    
-            if coroutine.status(v) == 'dead' then 
+
+            if coroutine.status(v) == 'dead' then
                 aex_int.threads_k[k] = nil
-                goto xcontinue
-            end
-            coroutine.resume(v)
-            ::xcontinue::
+            else coroutine.resume(v) end
         end
 
         if #processes == 0 then return end
 
         for pid, process in pairs(processes) do
             current_pid = pid
-            if #process.threads == 0 then 
+            if #process.threads == 0 then
                 processes[pid] = nil
-                goto xcontinue
-            end
+            else
+                for k, thread in pairs(process.threads) do
 
-            for k, thread in pairs(process.threads) do
-                if coroutine.status(thread) == 'dead' then 
-                    process.threads[k] = nil
-                    goto ycontinue
+                    if coroutine.status(thread) == 'dead' then
+                        process.threads[k] = nil
+                    else coroutine.resume(thread) end
                 end
-                coroutine.resume(thread)
-                ::ycontinue::
             end
-            ::xcontinue::
         end
         waitOne()
     end
 end
 function aex_int.proc.get_safeguard_env()
-    local env = {
-        loadstring = function(...) 
+    local env
+    env = {
+        loadstring = function(...)
             local code = loadstring(...)
             if type(code) == 'function' then
                 setfenv(code, env)

@@ -8,12 +8,20 @@ local aex_int = {
     },
     dev       = {},
     dev_marks = {},
+
+    drivers   = {},
+    driver_id_counter = 0,
+
     mounts    = {},
+
     processes = {},
     threads_k = {},
     next_thread_k_id = 1,
 }
 local boot_kind = boot.kind
+local tty_i = {
+    writeln = function(str) end
+}
 
 local function halt()
     repeat coroutine.wait(1)
@@ -39,11 +47,26 @@ local function rgb(r, g, b)
 end
 
 function aex_int.assertType(val, typec, ignore_nil)
-    if not val then 
-        if ignore_nil then return end 
-        error(string.format('Expected %s, got nil', typec), 3) 
+    if not val then
+        if ignore_nil then return end
+        error(string.format('Expected %s, got nil', typec), 3)
     end
     if type(val) ~= typec then error(string.format('Expected %s, got %s', typec, type(val)), 3) end
+end
+function aex_int.runInKernel(func)
+    aex_int.next_thread_k_id = aex_int.next_thread_k_id + 1
+    local id = aex_int.next_thread_k_id
+    local ret = {}
+
+    aex_int.threads_k[id] = coroutine.create(function()
+        local ret = {pcall(func)}
+        if not ret[1] then ret = {} end
+
+        table.remove(ret, 1)
+    end)
+
+    while aex_int.threads_k[id] do waitOne() end
+    return unpack(ret)
 end
 
 local    log = {}
@@ -64,17 +87,24 @@ end
 function sys.add_device(name, open_cb)
     aex_int.assertType(name, 'string')
     aex_int.assertType(open_cb,  'function')
-    aex_int.assertType(ioctl_cb, 'function', true)
 
-    if string.sub(name, 1, 5) ~= '/dev/' then
-        name = '/dev/' .. name
-    end
+    if string.sub(name, 1, 5) ~= '/dev/' then name = '/dev/' .. name end
 
     aex_int.dev[name] = open_cb
     aex_int.dev_marks[name] = 'generic'
 
-    aex_int.boot.tty.writeln(log.device() .. 'Added ' .. name)
+    aex_int.printk(log.device() .. 'Added ' .. name)
+    return true
+end
+function sys.remove_device(name)
+    aex_int.assertType(name, 'string')
 
+    if string.sub(name, 1, 5) ~= '/dev/' then name = '/dev/' .. name end
+
+    aex_int.dev[name] = nil
+    aex_int.dev_marks[name] = nil
+
+    aex_int.printk(log.device() .. 'Removed ' .. name)
     return true
 end
 function sys.mark_device(name, type)
@@ -90,102 +120,6 @@ end
 function sys.reset()
     aex_int.hal.core.reset()
 end
-
-local ansi_p
-local function init_tty0()
-    local tty = {}
-
-    if boot_kind == 'net_rh_emu' then
-        local x, y = 0, 0
-        local xsize = rh.ScreenX
-        local ysize = rh.ScreenY
-        local gpu = rh.GPU
-
-        local function putchar(byte)
-            if byte == 10 then     y = y + 1
-            elseif byte == 13 then x = 0
-            elseif byte == 8 then
-                if x > 0 then
-                    x = x - 1
-                    gpu[x + (y * xsize)] = 32
-                end
-            else
-                gpu[x + (y * xsize)] = byte
-                x = x + 1
-                if x == xsize then
-                    x = 0
-                    y = y + 1
-                end
-            end
-        end
-
-        function tty.write(str)
-            if ansi_p then
-                local a = ansi_p:feed(str)
-                if a then 
-                    local i = 0
-                    for k, v in pairs(a) do
-                        i = v[1]
-                        if i == 0 then
-                            local str = v[2]
-                            for i = 1, #str do
-                                putchar(string.byte(str[i]))
-                            end
-                        else
-                            if i == 72 then
-                                if v[2] == '[' then
-                                    if v[3] then x = v[3] - 1 end
-                                    if v[4] then y = v[4] - 1 end
-                                end
-                            elseif i == 74 then
-                                if v[2] == '[' then tty.clear() end
-                            elseif i == 109 then
-                                if v[2] == '[' then
-                                    if v[3] == 38 then
-                                        if v[4] == 2 then rh.GPU:SetFGColor(v[5], v[6], v[7]) end
-                                    elseif v[3] == 48 then
-                                        if v[4] == 2 then rh.GPU:SetBGColor(v[5], v[6], v[7]) end
-                                    end
-                                end
-                            else printTable(v) end
-                        end
-                    end
-                end
-                return
-            end
-
-            str = tostring(str)
-            for i = 1, #str do
-                putchar(string.byte(str[i]))
-            end
-        end
-        function tty.writeln(str)
-            str = tostring(str)
-            tty.write(str or '')
-            tty.write('\r\n')
-        end
-        function tty.clear()
-            rh.GPU:Clear()
-            x, y = 0, 0
-        end
-    end
-
-    if not tty.clear then   function tty.clear() end end
-    if not tty.writeln then function tty.writeln() end end
-    if not tty.write then   function tty.write() end end
-
-    return tty
-end
-local tty_i = init_tty0()
-aex_int.boot.tty = tty_i
-
-tty_i.clear()
-tty_i.writeln('|##### |#### \\#  /#   |#####')
-tty_i.writeln('|#   # |#     \\#/#        |#')
-tty_i.writeln('|##### |####   \\#     |#####')
-tty_i.writeln('|#   # |#     /#\\#        |#')
-tty_i.writeln('|#   # |#### /#  \\#   |#####')
-tty_i.writeln(log.pad(4) .. 'Booting AEX/3')
 
 local function readFile(path)
     if sys.fs_open then
@@ -219,7 +153,40 @@ local function loadModuleSafe(path)
     return loadSafe(code)
 end
 
-ansi_p = loadSafe(readFile('/lib/ansi.lib')).getParser()
+local ansi_p
+local function init_tty0()
+    local tty = loadModuleSafe('/sys/ttyinit/' .. boot_kind .. '.lib')
+
+    if not tty.setAnsi then function tty.setAnsi() end end
+    if not tty.clear then   function tty.clear() end end
+    if not tty.writeln then function tty.writeln() end end
+    if not tty.write then   function tty.write() end end
+
+    return tty
+end
+tty_i = init_tty0()
+aex_int.boot.tty = tty_i
+aex_int.printk = function(str)
+    if aex_int.started then return end
+    tty_i.writeln(str)
+end,
+
+tty_i.clear()
+tty_i.writeln('|##### |#### \\#  /#   |#####')
+tty_i.writeln('|#   # |#     \\#/#        |#')
+tty_i.writeln('|##### |####   \\#     |#####')
+tty_i.writeln('|#   # |#     /#\\#        |#')
+tty_i.writeln('|#   # |#### /#  \\#   |#####')
+tty_i.writeln(log.pad(4) .. 'Booting AEX/3')
+
+local function loadDriverOrHalt(path)
+    local r, msg = sys.drvmgr_load(path)
+    if not r then tty_i.writeln(msg) halt() end
+
+    tty_i.writeln(log.load() .. 'Loaded "' .. sys.drvmgr_info(r).full_name .. '" driver')
+end
+
+tty_i.setAnsi(loadSafe(readFile('/lib/ansi.lib')).getParser())
 tty_i.write(seq('[', 38, 2, 255, 255, 255, 'm'))
 tty_i.writeln(log.ok() .. '/dev/tty0 upgraded')
 
@@ -227,18 +194,22 @@ tty_i.writeln('Loading the HAL')
 loadModuleSafe('/sys/hal.lib')
 tty_i.writeln(log.ok() .. 'HAL loaded')
 
+tty_i.writeln('Loading drvmgr')
+loadModuleSafe('/sys/drvmgr.lib')
+tty_i.writeln(log.ok() .. 'drvmgr loaded')
+
 local envinit_e = readFile('/sys/envinit.e/' .. boot_kind .. '.lib')
 if envinit_e then
     loadSafe(envinit_e)
     tty_i.writeln(log.ok()   .. 'Executed early init for ' .. boot_kind)
 else tty_i.writeln(log.none() .. 'No early init found for ' .. boot_kind) end
 
-tty_i.writeln('Enumerating hardware')
-loadModuleSafe('/sys/drv/ram.drv')
-loadModuleSafe('/sys/drv/hddh.drv')
+tty_i.writeln('Enumerating hardware and loading drivers')
+loadDriverOrHalt('/sys/drv/ram.drv')
+loadDriverOrHalt('/sys/drv/hddh.drv')
 
 local tty_input_buffer = ''
-do 
+do
     local x, y = 0, 0
     sys.add_device('tty0', function()
         return {
@@ -267,7 +238,7 @@ do
             getSize = function(self)
                 return x, y
             end,
-        } 
+        }
     end)
     sys.mark_device('tty0', 'tty')
 end
@@ -287,6 +258,7 @@ loadModuleSafe('/sys/core/req.km')
 loadModuleSafe('/sys/core/sec.km')
 loadModuleSafe('/sys/core/input.km')
 loadModuleSafe('/sys/core/func.km')
+loadModuleSafe('/sys/core/syshook.km')
 tty_i.writeln(log.ok() .. 'Core modules loaded')
 tty_i.writeln('')
 
@@ -296,10 +268,13 @@ if envinit_p then
     tty_i.writeln(log.ok()   .. 'Executed post init for ' .. boot_kind)
 else tty_i.writeln(log.none() .. 'No post init found for ' .. boot_kind) end
 
-sys.thread_create(function() 
+tty_i.writeln('Loading extra drivers')
+loadDriverOrHalt('/sys/drv/pdevs.drv')
+
+sys.thread_create(function()
     while true do
         waitOne()
-        
+
         keys = sys.input_get_keys()
         if not keys then goto xcontinue end
 

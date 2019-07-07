@@ -1,8 +1,5 @@
 --@EXT lib
-local aex_int = sys.get_internal_table()
-
-aex_int.loadSafe(aex_int.readFile('/sys/drv/netkb.drv'))
-
+sys.drvmgr_load('/sys/drv/netkb.drv')
 do 
     sys.thread_create(function()
         local lastx, lasty

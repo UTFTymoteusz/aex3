@@ -100,15 +100,39 @@ local function delete(path)
     local current_sector = getPos(path)
 end
 
-sys.add_device('ram', function()
-    local files = {}
-    return {
-        fileRead   = function(self, path)       return write(path) end,
-        fileExists = function(self, path)       return exists(path) end,
-        fileWrite  = function(self, path, data) return write(path, data) end,
-        fileList   = function(self, path)       return list(path) end,
-        fileDelete = function(self, path)       return delete(path) end,
-        dirCreate  = function(self, path)       return mkdir(path) end,
-    }
-end)
-sys.mark_device('ram', 'hdd')
+local driver = {}
+
+driver.full_name = 'RAM Access Driver'
+driver.name = 'ramacc'
+driver.type = 'storage'
+driver.provider = 'Tymkboi'
+driver.version  = '1.0'
+driver.disallow_disable = true
+
+function driver.load()
+
+end
+function driver.unload()
+
+end
+function driver.enable()
+    sys.add_device('ram', function()
+        local files = {}
+        return {
+            fileRead   = function(self, path)       return write(path) end,
+            fileExists = function(self, path)       return exists(path) end,
+            fileWrite  = function(self, path, data) return write(path, data) end,
+            fileList   = function(self, path)       return list(path) end,
+            fileDelete = function(self, path)       return delete(path) end,
+            dirCreate  = function(self, path)       return mkdir(path) end,
+        }
+    end)
+    sys.mark_device('ram', 'hdd')
+    sys.drvmgr_claim('ram', driver)
+    return true
+end
+function driver.disable()
+    return false
+end
+
+return driver
