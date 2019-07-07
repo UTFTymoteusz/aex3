@@ -13,4 +13,7 @@ end
 function proc.list()
     return sys.process_list()
 end
+function proc.registerSignalHandler(name, callback)
+    return sys.sig_register_handler(name, callback)
+end
 return proc
