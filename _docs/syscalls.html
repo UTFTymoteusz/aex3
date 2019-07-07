@@ -30,9 +30,6 @@
         <h2>sys.mark_device([string] name, [string] type)</h2>
         <p>Marks a device as a specified (for example hdd for hard drives) type. If the name starts with /dev/, it will ignore the first 5 chars. This is mostly used in auto-configuration of devices.</p>
 
-        <h2>sys.drvmgr_load([string] path)</h2>
-        <p>Placeholder description</p>
-
         <h2>sys.get_running_pid()</h2>
         <p>Gets the currently running process's id.</p>
         <h4>Returns:</h4>
@@ -42,7 +39,41 @@
 
         <h2>sys.reset()</h2>
         <p>Resets the machine.</p>
-        
+
+        <h2>sys.drvmgr_load([string] path)</h2>
+        <p>Placeholder description</p>
+
+        <h2>sys.drvmgr_unload([number] id)</h2>
+        <p>Placeholder description</p>
+
+        <h2>sys.drvmgr_enable([number] id)</h2>
+        <p>Placeholder description</p>
+
+        <h2>sys.drvmgr_disable([number] id)</h2>
+        <p>Placeholder description</p>
+
+        <h2>sys.drvmgr_list()</h2>
+        <p>Placeholder description</p></ul>
+        <h4>Returns:</h4>
+        <ul>
+            Table of all driver id's
+        </ul>
+
+        <h2>sys.drvmgr_info([number] id)</h2>
+        <p>Placeholder description</p></ul>
+        <h4>Returns:</h4>
+        <ul>
+            <li>On success: [table] Driver Information</li>
+            <li>On failure: [nil] nil</li>
+        </ul>
+
+        <h2>sys.drvmgr_claim([string] dev_name, [table] driver_table)</h2>
+        <p>Placeholder description</p>
+        <h4>Returns:</h4>
+        <ul>
+            <li>Bool that is true if the operation succeeded</li>
+        </ul>
+
         <h2>sys.fs_open([string] path, [string] mode)</h2>
         <p>Opens a file from the virtual filesystem. Normally, this returns a <a href="https://add.the.goddamned.reference.jesus">file descriptor object</a>, but in the case of devices the object can differ in specific ways (for example, HDD's have no :read() and :write(), but instead they have :fileRead() and :fileWrite()). To differentiate between various types of devices you should use the 'type' field. The <i>mode</i> argument has only any effect when opening an actual file. If the <i>mode</i> argument is not specified, it will default to <i>r</i>.</p>
         <h4>Modes</h4>
@@ -154,6 +185,9 @@
             <li>On success: [bool] true</li>
             <li>On failure: [nil] nil, [number] Failure Code</li>
         </ul>
+
+        <h2>sys.sig_register_handler([string] name, [function] callback)</h2>
+        <p>Placeholder</p>
 
         <h2>sys.set_hostname([string] new_hostname)</h2>
         <p>Sets the hostname.</p>
