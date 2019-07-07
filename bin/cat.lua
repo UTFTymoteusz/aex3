@@ -8,7 +8,7 @@ if not file then
         io.write(io.read())
     end
 else
-    local s, r = fs.open(file)
+    local s, r = fs.open(file, 'r')
     if not s then
         stderr:writeln('cat: ' .. file .. ': ' .. res.translate(r))
         return
@@ -19,6 +19,9 @@ else
         a = s:read()
         if #a == 0 then break end
 
+        if not s.isDevice then
+            a = string.replace(a, '\n', '\r\n')
+        end
         stdout:write(a)
         waitOne()
     end
