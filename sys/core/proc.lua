@@ -83,6 +83,13 @@ function sys.process_create(path, args, dir, sec_assoc)
                 stderr = stderr,
             }
         end,
+        abort = function(self)
+            aex_int.runInKernel(function()
+                aex_int.processes[pid] = nil
+                aex_int.syshook.invoke('process_end', pid, true)
+            end)
+            return true
+        end,
         wait = function()
             while aex_int.processes[pid] do waitOne() end
             return true
@@ -172,7 +179,6 @@ function sys.thread_create(func)
             end,
         }
     end
-    local c_pid = sys.get_running_pid()
     local process = aex_int.processes[c_pid]
 
     process.next_thread_id = process.next_thread_id + 1
