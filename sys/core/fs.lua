@@ -44,14 +44,14 @@ function sys.fs_open(path, mode)
         function ret.read(self, len)
             if not len then
                 local dd = string.sub(data, ret.position)
-                ret.position = #data
+                ret.position = #data + 1
 
                 return dd
             end
             if len < 0 then return '' end
 
             local start = ret.position
-            ret.position = math.clamp(ret.position + len, 1, #data)
+            ret.position = math.clamp(ret.position + len, 1, #data + 1)
 
             return string.sub(data, start, len)
         end
