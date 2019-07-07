@@ -87,11 +87,12 @@ function driver.enable()
     sys.drvmgr_claim('random', driver)
 
     sys.add_device('urandom', function()
-        local buff = ''
+        local buff
         return {
             write = function(self, data) end,
             read = function(self, len)
                 len = len and len or 4
+                buff = ''
                 for i = 1, len do
                     buff = buff .. string.char(math.random(0, 255))
                 end
