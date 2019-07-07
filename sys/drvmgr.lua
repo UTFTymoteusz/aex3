@@ -78,8 +78,13 @@ function sys.drvmgr_unload(id)
     if not drv then
         return nil, 'Invalid driver id'
     end
-    local s, r = pcall(drv.base.disable)
-    if not s then return nil, 'Driver error: ' .. r end
+
+    local s, r
+    if drv.enabled then
+        s, r = pcall(drv.base.disable)
+        if not s then return nil, 'Driver error: ' .. r end
+        drv.enabled = false
+    end
     s, r = pcall(drv.base.unload)
     if not s then return nil, 'Driver error: ' .. r end
 
