@@ -49,3 +49,10 @@ local cool_dirs = {'/dev/', '/home/', '/mnt/', '/var/'}
 for _, dir in pairs(cool_dirs) do
     if not sys.fs_exists(dir) then sys.fs_mkdir(dir) end
 end
+
+if not sys.fs_exists('/cfg/motd') then 
+    local f = sys.fs_open('/cfg/motd', 'w')
+    f:write("Welcome to AEX/3\r\n#####################################\r\n\r\nIf you'd like to change the welcome message, edit /cfg/motd")
+    f:close()
+end
+    
