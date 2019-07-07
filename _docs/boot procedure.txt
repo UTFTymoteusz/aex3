@@ -6,8 +6,8 @@
 4.5. [ Optional ] Do any environment-dependent initialization
 5. Run kernel 
 
-[KERNEL]
-1. Init tty0
+[KERNEL]    
+1. Init tty0 (execute an ttyinit for the environment)
 2. HAL
 3. Execute an envinit.e (.early) .lib for the things our HAL can't solve (if exists)
 4. Add /dev/tty0
