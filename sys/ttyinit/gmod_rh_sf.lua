@@ -9,11 +9,6 @@ if chipset.Components.GPU then
     local function putchar(byte)
         if byte == 10 then
             y = y + 1
-
-            if y > 50 then
-                y = 50
-                gpu[0xFFFF] = 0x10
-            end
         elseif byte == 13 then
             x = 0
         elseif byte == 8 then
@@ -28,6 +23,10 @@ if chipset.Components.GPU then
                 x = 0
                 y = y + 1
             end
+        end
+        if y > 50 then
+            y = 50
+            gpu[0xFFFF] = 0x10
         end
         gpu[0xFFFC] = x + (y * 127)
     end
