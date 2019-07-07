@@ -21,7 +21,7 @@ function driver.enable()
     local kb_t = sys.input_add_device('rhkbd')
     
     local ckeys, bkeys, act = {}, {}
-    sys.thread_create(function()
+    thread = sys.thread_create(function()
         while true do
             waitOne()
             
