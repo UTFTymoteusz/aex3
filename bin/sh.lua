@@ -3,6 +3,9 @@ local fs   = require('fs')
 local os   = require('os')
 local proc = require('proc')
 local sh   = require('sh')
+local thread = require('thread')
+
+proc.registerSignalHandler('stop', function() return true end)
 
 local current_dir = '/'
 
@@ -83,15 +86,36 @@ local function exec(entry)
     if not s then return s, r end
 
     for k, v in pairs(exec) do
+        if fs.getExtension(v.bin) ~= 'lua' then io.writeln('sh: ' .. v.bin .. ': Not an executable') goto xcontinue end 
+
         local pp, err = proc.create(v.bin, v.args, current_dir)
         if not pp then io.writeln('sh: ' .. v.bin .. ': Invalid executable ' .. err) goto xcontinue end
 
-        pp.stdin:bind(io.getstdin())
+        local input_th = thread.create(function() 
+            local c, b
+            while true do 
+                c = io.read(1)
+                if #c == 0 then return end
+
+                b = string.byte(c)
+
+                if (b == 3) then
+                    io.write('^C')
+                    pp:stop()
+                elseif (b == 23) then
+                    io.write('^W')
+                    pp:abort()
+                else pp.stdin:write(c) end
+            end 
+        end)
         pp.stdout:bind(io.getstdout())
         pp.stderr:bind(io.getstderr())
 
         pp:start()
         pp:wait()
+
+        input_th:abort()
+
         ::xcontinue::
     end
     return true
