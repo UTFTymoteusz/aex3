@@ -44,9 +44,8 @@ end
 if not aex_int.hostname then
     aex_int.need_verify = true
 end
-if not sys.fs_exists('/dev/') then
-    sys.fs_mkdir('/dev/')
-end
-if not sys.fs_exists('/home/') then
-    sys.fs_mkdir('/home/')
+
+local cool_dirs = {'/dev/', '/home/', '/mnt/', '/var/'}
+for _, dir in pairs(cool_dirs) do
+    if not sys.fs_exists(dir) then sys.fs_mkdir(dir) end
 end
