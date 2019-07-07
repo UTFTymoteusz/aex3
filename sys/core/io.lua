@@ -29,12 +29,12 @@ function io.getGenericStream()
                 return bound:read(len)
             end
             local data = ''
-            while #data == 0 do waitOne() end
+            while #buffer == 0 do waitOne() end
 
-            if not len then return data end
-            if len > #buffer then
-                data   = string.sub(buffer, 1, len)
-                buffer = string.sub(buffer, len + 1)
+            if not len then data, buffer = buffer, '' return data
+            else
+                while #buffer < len do waitOne() end
+                data, buffer = string.sub(buffer, 1, len), string.sub(buffer, len + 1)
             end
             return data
         end
