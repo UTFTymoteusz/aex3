@@ -29,6 +29,7 @@ if chipset.Components.GPU then
                 y = y + 1
             end
         end
+        gpu[0xFFFC] = x + (y * 127)
     end
 
     function tty.setAnsi(tbl)
