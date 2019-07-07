@@ -3,6 +3,8 @@ AEX/3 is an operating system-like thing written in Lua. It is aimed to be able t
 
 The organization of the build-related things might be a nightmare because this is my first public repository.
 
+Please keep in mind that this isn't complete, most likely.
+
 # Building
 At the moment the building of AEX/3 requires some things that I'm not sure if are complete enough to be released into the public. 
 
