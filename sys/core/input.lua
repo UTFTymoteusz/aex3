@@ -19,7 +19,7 @@ local function resolveKeys()
     kn = {}
 
     for _, v in pairs(input_cur_keys) do
-        if v < 154 then table.add(kn, {v}) end
+        if v < 154 or v > 251 then table.add(kn, {v}) end
     end
     if #kn == 0 then return end
     
@@ -45,7 +45,7 @@ function sys.input_add_device(name)
         keyPress = function(self, key)
             if type(key) ~= 'number' then error(':keyPress requires a number, not a string') end
 
-            if key >= 17 and key <= 20 then key = key + 127
+            if key >= 17 and key <= 20 then key = key + 235
             elseif key == 127 then key = 8 end
 
             input_key_start_t = timer.systime() + 1
@@ -58,7 +58,7 @@ function sys.input_add_device(name)
         keyRelease = function(self, key)
             if type(key) ~= 'number' then error(':keyRelease requires a number, not a string') end
 
-            if key >= 17 and key <= 20 then key = key + 127
+            if key >= 17 and key <= 20 then key = key + 235
             elseif key == 127 then key = 8 end
 
             if key == input_last_key then
@@ -90,7 +90,7 @@ sys.thread_create(function()
         end
         if input_last_key then 
             systime = timer.systime()
-            if systime > input_key_start_t and input_last_key < 154 then
+            if systime > input_key_start_t and (input_last_key < 154 or input_last_key > 251) then
                 input_key_start_t = systime + 0.05
 
                 input_keys_raw = {input_last_key}
