@@ -259,6 +259,7 @@ loadModuleSafe('/sys/core/sec.km')
 loadModuleSafe('/sys/core/input.km')
 loadModuleSafe('/sys/core/func.km')
 loadModuleSafe('/sys/core/syshook.km')
+loadModuleSafe('/sys/core/sig.km')
 tty_i.writeln(log.ok() .. 'Core modules loaded')
 tty_i.writeln('')
 

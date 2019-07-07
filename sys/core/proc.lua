@@ -78,10 +78,21 @@ function sys.process_create(path, args, dir, sec_assoc)
                 parent = c_pid,
                 threads = {cout},
                 next_thread_id = 2,
+                signal_handlers = {},
                 stdin  = stdin,
                 stdout = stdout,
                 stderr = stderr,
             }
+        end,
+        stop = function(self)
+            return aex_int.runInKernel(function()
+                if aex_int.run_signal(pid, 'stop') then return false end
+
+                aex_int.processes[pid] = nil
+                aex_int.syshook.invoke('process_end', pid, true)
+                
+                return true
+            end)
         end,
         abort = function(self)
             aex_int.runInKernel(function()
