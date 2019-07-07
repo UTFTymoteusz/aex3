@@ -1,1 +1,1 @@
-No camel-toe, use _ instead
+No camel-toe-stupid-case, use _ instead
