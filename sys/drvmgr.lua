@@ -55,7 +55,8 @@ function sys.drvmgr_load(path)
     aex_int.drivers[nid] = {
         base = drv,
         enabled = true,
-        owned = {}
+        owned = {},
+        disallow_disable = drv.disallow_disable,
     }
     do
         local env = table.copy(getfenv(sys.drvmgr_load)) -- Limited trust
@@ -76,17 +77,20 @@ end
 function sys.drvmgr_unload(id)
     local drv = aex_int.drivers[id]
     if not drv then
-        return nil, 'Invalid driver id'
+        return false, 'Invalid driver id'
     end
+
+    if drv.disallow_disable then
+        return false, 'Driver cannot be unloaded' end
 
     local s, r
     if drv.enabled then
         s, r = pcall(drv.base.disable)
-        if not s then return nil, 'Driver error: ' .. r end
+        if not s then return false, 'Driver error: ' .. r end
         drv.enabled = false
     end
     s, r = pcall(drv.base.unload)
-    if not s then return nil, 'Driver error: ' .. r end
+    if not s then return false, 'Driver error: ' .. r end
 
     aex_int.drivers[id] = nil
 
@@ -95,10 +99,13 @@ end
 function sys.drvmgr_enable(id)
     local drv = aex_int.drivers[id]
     if not drv then
-        return nil, 'Invalid driver id'
-    end
+        return false, 'Invalid driver id' end
+
+    if drv.enabled then
+        return false, 'Driver already enabled' end
+
     local s, r = pcall(drv.base.enable)
-    if not s then return nil, 'Driver error: ' .. r end
+    if not s then return false, 'Driver error: ' .. r end
     drv.enabled = true
 
     return true
@@ -106,8 +113,13 @@ end
 function sys.drvmgr_disable(id)
     local drv = aex_int.drivers[id]
     if not drv then
-        return nil, 'Invalid driver id'
-    end
+        return nil, 'Invalid driver id' end
+
+    if not drv.enabled then
+        return false, 'Driver already disabled' end
+    if drv.disallow_disable then
+        return false, 'Driver cannot be disabled' end
+
     local s, r = pcall(drv.base.disable)
     if not s then return nil, 'Driver error: ' .. r end
     drv.enabled = false
@@ -131,7 +143,7 @@ function sys.drvmgr_info(id)
         type = drv.base.type,
         provider = drv.base.provider,
         version  = drv.base.version,
-        disallow_disable = drv.base.disallow_disable,
+        disallow_disable = drv.disallow_disable,
         enabled = drv.enabled,
         owned_devices = drv.owned,
     }
