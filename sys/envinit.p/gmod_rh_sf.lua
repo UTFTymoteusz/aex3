@@ -8,3 +8,4 @@ end
 
 local dev = sys.fs_open('/dev/tty0')
 dev:setSize(127, 51)
+dev:close()
