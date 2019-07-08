@@ -9,5 +9,6 @@ aex_int.result = {
     invalid_device_error = -0xD001,
     no_such_device_error = -0xD002,
     already_mounted_error = -0xD003,
+    no_media_inserted_error = -0xD004,
     no_such_file_or_directory = -0xFD01,
 }

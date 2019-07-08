@@ -10,6 +10,7 @@ local translations = {
     [-0xD001] = 'Invalid device',
     [-0xD002] = 'No such device',
     [-0xD003] = 'Device already mounted',
+    [-0xD004] = 'No media inserted'
     [-0xFD01] = 'No such file or directory',
 }
 res.translations = translations
