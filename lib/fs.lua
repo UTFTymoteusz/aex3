@@ -96,4 +96,7 @@ end
 function fs.unmount(path)
     return sys.fs_unmount(path)
 end
+function fs.getMounts()
+    return sys.fs_get_mounts()
+end
 return fs

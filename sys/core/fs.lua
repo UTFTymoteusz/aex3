@@ -173,3 +173,10 @@ function sys.fs_unmount(path)
 
     return true
 end
+function sys.fs_get_mounts()
+    local ret = {}
+    for mount, drive in pairs(mounts) do
+        ret[mount] = {path = drive.path}
+    end
+    return ret
+end
