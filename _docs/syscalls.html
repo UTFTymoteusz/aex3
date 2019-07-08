@@ -166,17 +166,24 @@
         </ul>
 
         <h2>sys.input_get_keys()</h2>
-        <p>Returns currently pressed keys transformed by keys like control and alt.</p>
+        <p>Returns current key events.</p>
         <h4>Returns:</h4>
         <ul>
             <li>[table] Table of every pressed keys' bytes</li>
         </ul>
 
         <h2>sys.input_get_keys_raw()</h2>
-        <p>Returns currently pressed keys including control and alt.</p>
+        <p>Returns current key events including control and alt.</p>
         <h4>Returns:</h4>
         <ul>
             <li>[table] Table of every pressed keys' bytes</li>
+        </ul>
+
+        <h2>sys.input_get_pressed_keys()</h2>
+        <p>Returns currently pressed keys including control and alt.</p>
+        <h4>Returns:</h4>
+        <ul>
+            <li>[table] Table where every index is a pressed key's byte</li>
         </ul>
 
         <h2>sys.sec_user_exists([string] user)</h2>

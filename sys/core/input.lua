@@ -74,6 +74,9 @@ end
 function sys.input_get_keys_raw()
     return input_keys_raw
 end
+function sys.input_get_pressed_keys()
+    return input_keys_pres
+end
 
 local systime = 0
 sys.thread_create(function()
