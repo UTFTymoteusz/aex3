@@ -4,13 +4,13 @@ local function read(path)
     local current_sector = 1
     local split = string.split(path, '/')
     table.remove(split, 1)
-    
+
     local sec
     for k, v in pairs(split) do
         if #v == 0 and k == #split then break end
-        
+
         sec = sectors[current_sector]
-        
+
         if not sec[v] then
             return nil
         else
@@ -23,16 +23,16 @@ local function write(path, data)
     local current_sector = 1
     local split = string.split(path, '/')
     table.remove(split, 1)
-    
+
     local sec
     for k, v in pairs(split) do
         if #v == 0 and k == #split then break end
-        
+
         sec = sectors[current_sector]
-        
+
         if not sec[v] then
             current_sector = #sectors + 1
-            
+
             if k == #split then sec[v] = {'file', current_sector}
             else sec[v] = {'dir', current_sector} sectors[current_sector] = {} end
         else
@@ -47,16 +47,16 @@ local function mkdir(path)
     local current_sector = 1
     local split = string.split(path, '/')
     table.remove(split, 1)
-    
+
     local sec
     for k, v in pairs(split) do
         if #v == 0 and k == #split then break end
-        
+
         sec = sectors[current_sector]
-        
+
         if not sec[v] then
             current_sector = #sectors + 1
-            
+
             sec[v] = {'dir', current_sector} sectors[current_sector] = {}
         else
             if sec[v][1] ~= 'dir' then return false end
@@ -71,13 +71,13 @@ local function getPos(path)
     local current_sector = 1
     local split = string.split(path, '/')
     table.remove(split, 1)
-    
+
     local sec
     for k, v in pairs(split) do
         if #v == 0 and k == #split then break end
-        
+
         sec = sectors[current_sector]
-        
+
         if not sec then return false end
         if not sec[v] then
             return false

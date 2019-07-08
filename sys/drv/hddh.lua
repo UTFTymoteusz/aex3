@@ -33,7 +33,7 @@ local function enable()
         end)
         sys.mark_device('hdd' .. devid, 'hdd')
         sys.drvmgr_claim('hdd' .. devid, driver)
-    
+
         devid = devid + 1
         ::xcontinue::
     end

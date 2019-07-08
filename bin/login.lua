@@ -17,7 +17,7 @@ while true do
 
     assoc = sec.getNewAssoc(user, pass)
     if sec.verifyAssoc(assoc) then break end
-    
+
     io.writeln('Login incorrect')
 end
 if fs.exists('/cfg/motd') then

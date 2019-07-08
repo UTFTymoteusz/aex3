@@ -40,7 +40,7 @@ function sys.fs_open(path, mode)
     if mode == 'r' then
         local data, c = mount:fileRead(path_r)
         if not data or type(data) ~= 'string' then return nil, aex_int.result.no_such_file_or_directory end
-            
+
         function ret.read(self, len)
             if not len then
                 local dd = string.sub(data, ret.position)
@@ -87,7 +87,7 @@ function sys.fs_exists(path)
 
     local mount, path_r = getMount(path)
     if not mount then return false end
-    
+
     return mount:fileExists(path_r)
 end
 function sys.fs_list(path)
@@ -105,14 +105,14 @@ function sys.fs_list(path)
 
     for k, _ in pairs(aex_int.dev) do
         local sp = string.split(k, '/')
-        
+
         if cnt == table.concat(sp, "/", 1, #sp - 1) then
             table.insert(l, {name = sp[#sp], type = 'dev'})
         end
     end
     for k, _ in pairs(aex_int.mounts) do
         local sp = string.split(k, '/')
-        
+
         if cnt == table.concat(sp, "/", 1, #sp - 2) and path ~= k then
             table.insert(l, {name = sp[#sp - 1] .. '/', type = 'mnt'})
         end
@@ -127,7 +127,7 @@ function sys.fs_delete(path)
 
     local mount, path_r = getMount(path)
     if not mount then return nil end
-    
+
     return mount:fileDelete(path_r)
 end
 function sys.fs_mkdir(path)
@@ -135,7 +135,7 @@ function sys.fs_mkdir(path)
 
     local mount, path_r = getMount(path)
     if not mount then return nil end
-    
+
     return mount:dirCreate(path_r)
 end
 function sys.fs_mount(dev_path, path)
@@ -154,7 +154,7 @@ function sys.fs_mount(dev_path, path)
     if path[#path] ~= '/' then path = path .. '/' end
     mounts[path] = dev
 
-    return true 
+    return true
 end
 function sys.fs_unmount(path)
     if not path then error('sys.fs_unmount: Missing arguments') end

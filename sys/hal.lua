@@ -79,7 +79,7 @@ elseif boot_kind == 'gmod_rh_sf' then
             drive = drives[id]
             local a = (hook.runRemote(drive[1], 'hddaccess', drive[2], 3, path)[1] or {})[1]
             if type(a) ~= 'table' then return nil end
-            
+
             local ent = {}
             for k, v in pairs(a) do
                 ent[#ent + 1] = {

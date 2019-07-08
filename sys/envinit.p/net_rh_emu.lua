@@ -1,6 +1,6 @@
 --@EXT lib
 sys.drvmgr_load('/sys/drv/netkb.drv')
-do 
+do
     sys.thread_create(function()
         local lastx, lasty
         local dev = sys.fs_open('/dev/tty0')

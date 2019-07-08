@@ -1,7 +1,7 @@
 if not sys.sec_user_exists('root') then
     local ip, cp
     io.writeln('Setting the password for root')
-    while true do 
+    while true do
         io.write('Password: ')
         ip = io.readln()
         io.writeln()

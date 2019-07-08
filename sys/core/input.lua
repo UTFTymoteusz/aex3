@@ -22,7 +22,7 @@ local function resolveKeys()
         if v < 154 or v > 251 then table.add(kn, {v}) end
     end
     if #kn == 0 then return end
-    
+
     if input_keys_pres[158] then
         for k, v in pairs(kn) do
 
@@ -31,7 +31,7 @@ local function resolveKeys()
         end
         input_keys = kn
         return
-    end 
+    end
     input_keys = kn
 end
 
@@ -88,14 +88,14 @@ sys.thread_create(function()
 
             goto xcontinue
         end
-        if input_last_key then 
+        if input_last_key then
             systime = timer.systime()
             if systime > input_key_start_t and (input_last_key < 154 or input_last_key > 251) then
                 input_key_start_t = systime + 0.05
 
                 input_keys_raw = {input_last_key}
                 input_keys     = {input_last_key}
-                
+
                 goto xcontinue
             end
         end

@@ -26,9 +26,9 @@ end
 function sh.parseArgs(args, skipEmpty)
     local tbl = {options = {}, args = {}}
     local i = 0
-    
+
     while (i < #args) do
-        i = i + 1  
+        i = i + 1
         local v = args[i]
 
         if (string.sub(v, 1, 2) == '--') then
@@ -37,7 +37,7 @@ function sh.parseArgs(args, skipEmpty)
                 if (nv[1] == '-') then nv = true
                 else i = i + 1 end
             else nv = true end
-            
+
             tbl.options[v] = nv
         elseif (v[1] == '-') then
             nv = args[i + 1]
@@ -45,7 +45,7 @@ function sh.parseArgs(args, skipEmpty)
                 if (nv[1] == '-') then nv = true
                 else i = i + 1 end
             else nv = true end
-            
+
             for i = 2, #v do tbl.options['-' .. v[i] ] = nv end
         elseif (#v ~= 0) then table.add(tbl.args, {v}) end
     end

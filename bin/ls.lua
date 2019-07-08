@@ -52,11 +52,11 @@ local function measure()
     return total
 end
 while items_per_column < #list do
-    
+
     items_per_column = items_per_column + 1
     num_columns = math.ceil(#list / items_per_column)
 
-    if measure() < width then 
+    if measure() < width then
         break end
 end
 -- copy end
@@ -72,7 +72,7 @@ local function cycle()
 
         name = v.name
         ext  = fs.getExtension(name)
-        
+
         if v.type == 'dir' then     name = ansi.colorFgRGB(0, 0, 255)   .. name .. ansi.resetg()
         elseif v.type == 'dev' then name = ansi.colorFgRGB(255, 255, 0) .. name .. ansi.resetg()
         elseif v.type == 'mnt' then name = ansi.colorBgRGB(0, 200, 0) .. ansi.colorFgRGB(0, 0, 255) .. name .. ansi.resetg()
@@ -84,7 +84,7 @@ local function cycle()
         lines[k] = (lines[k] or '') .. name .. string.rep(' ', (fattest - #v.name) + 2)
     end
 
-    fattest = 0 
+    fattest = 0
     so_far = {}
 end
 
@@ -94,7 +94,7 @@ for k, v in pairs(list) do
     ext  = fs.getExtension(name)
     current = current + 1
 
-    if v.type == 'dir' then 
+    if v.type == 'dir' then
         name = name
     end
     if current > items_per_column then

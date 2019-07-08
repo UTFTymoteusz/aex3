@@ -21,7 +21,7 @@ function ansi.colorBgRGB(r, g, b)
     return seq('[', 48, 2, r, g, b, 'm')
 end
 function ansi.resetg(r, g, b)
-    return ansi.colorFgRGB(255, 255, 255) .. ansi.colorBgRGB(0, 0, 0) -- for now 
+    return ansi.colorFgRGB(255, 255, 255) .. ansi.colorBgRGB(0, 0, 0) -- for now
     --return seq('[', 0, 'm')
 end
 function ansi.getParser()
@@ -47,7 +47,7 @@ function ansi.getParser()
                     buffer = buffer .. c
                 elseif state == 1 then
                     buffer = buffer .. c
-                    
+
                     if b > 59 and #buffer > 2 then
                         if not ret then ret = {} end
 

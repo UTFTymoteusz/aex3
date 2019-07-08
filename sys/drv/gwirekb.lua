@@ -19,20 +19,20 @@ function driver.enable()
     if chipset.Components.KB then kb = wire.getWirelink(chipset.Components.KB) end
 
     local kb_t = sys.input_add_device('rhkbd')
-    
+
     local ckeys, bkeys, act = {}, {}
     thread = sys.thread_create(function()
         while true do
             waitOne()
-            
-            if not kb then sleep(1000) 
+
+            if not kb then sleep(1000)
                 if chipset.Components.KB then kb = wire.getWirelink(chipset.Components.KB) end
-                goto xcontinue 
+                goto xcontinue
             end
 
             act = kb.ActiveKeys
             if not act then sleep(1000) goto xcontinue end
-            
+
             ckeys = {}
 
             for _, v in pairs(act) do

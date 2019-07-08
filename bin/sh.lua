@@ -82,18 +82,18 @@ local function exec(entry)
             end
         else exb[#exb + 1] = v.str end
     end
-    local s, r = fin() 
+    local s, r = fin()
     if not s then return s, r end
 
     for k, v in pairs(exec) do
-        if fs.getExtension(v.bin) ~= 'lua' then io.writeln('sh: ' .. v.bin .. ': Not an executable') goto xcontinue end 
+        if fs.getExtension(v.bin) ~= 'lua' then io.writeln('sh: ' .. v.bin .. ': Not an executable') goto xcontinue end
 
         local pp, err = proc.create(v.bin, v.args, current_dir)
         if not pp then io.writeln('sh: ' .. v.bin .. ': Invalid executable ' .. err) goto xcontinue end
 
-        local input_th = thread.create(function() 
+        local input_th = thread.create(function()
             local c, b
-            while true do 
+            while true do
                 c = io.read(1)
                 if #c == 0 then return end
 
@@ -106,7 +106,7 @@ local function exec(entry)
                     io.write('^W')
                     pp:abort()
                 else pp.stdin:write(c) end
-            end 
+            end
         end)
         pp.stdout:bind(io.getstdout())
         pp.stderr:bind(io.getstderr())

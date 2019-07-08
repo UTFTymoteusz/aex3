@@ -90,7 +90,7 @@ function sys.process_create(path, args, dir, sec_assoc)
 
                 aex_int.processes[pid] = nil
                 aex_int.syshook.invoke('process_end', pid, true)
-                
+
                 return true
             end)
         end,

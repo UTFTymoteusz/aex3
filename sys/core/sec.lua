@@ -9,7 +9,7 @@ local crypto = require('crypto')
 local proc_assocs = {}
 
 local function sha256_salt(thing)
-    thing = '%12' .. thing .. crypto.sha256(thing) .. 'd2#c' .. thing .. 'avx*&%' 
+    thing = '%12' .. thing .. crypto.sha256(thing) .. 'd2#c' .. thing .. 'avx*&%'
 
     sleep(100)
 
@@ -58,12 +58,12 @@ end
 function sys.sec_get_new_assoc(user, pass)
     local assocs = getAndVerify()
     local new
-    while true do 
+    while true do
         new = randomize()
         if not assocs[new] then break end
     end
     assocs[new] = {
-        user = user, 
+        user = user,
         pass = pass,
     }
     return {
@@ -126,7 +126,7 @@ local function sec_save()
 
         if v.pass then fd:write(v.pass)
         else fd:write('NP') end
-        
+
         fd:write(';\n')
     end
     fd:close()

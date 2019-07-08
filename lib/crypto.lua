@@ -66,7 +66,7 @@ do -- sha256 https://github.com/Egor-Skriptunoff/pure_lua_SHA2/blob/master/sha2.
         return rshift1(x % MOD, disp)
     end
     local function lshift(a, disp)
-        if disp < 0 then return rshift(a,-disp) end 
+        if disp < 0 then return rshift(a,-disp) end
         return (a * 2 ^ disp) % 2 ^ 32
     end
     local function rrotate(x, disp)

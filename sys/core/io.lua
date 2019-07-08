@@ -94,11 +94,11 @@ function io.readln(echo)
         c = io.read(1)
         b = string.byte(c)
         if ((b < 32) and (b ~= 13 and b ~= 8)) or b > 127 then goto xcontinue end
-        if c == '\b' then 
+        if c == '\b' then
             if echo and #buffer > 0 then io.write(c) end
-            
-            buffer = string.sub(buffer, 1, #buffer - 1) 
-            goto xcontinue 
+
+            buffer = string.sub(buffer, 1, #buffer - 1)
+            goto xcontinue
         end
         if echo then io.write(c) end
         if c == '\r' or c == '\n' then break end

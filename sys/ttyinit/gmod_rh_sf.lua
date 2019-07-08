@@ -37,7 +37,7 @@ if chipset.Components.GPU then
     function tty.write(str)
         if ansi_p then
             local a = ansi_p:feed(str)
-            if a then 
+            if a then
                 local i = 0
                 for k, v in pairs(a) do
                     i = v[1]

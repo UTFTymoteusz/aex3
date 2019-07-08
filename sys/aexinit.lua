@@ -42,7 +42,7 @@ for k, v in pairs(fs.readln('/cfg/init/tty')) do
 
     ::xcontinue::
 end
-while true do 
+while true do
     sleep(1000)
 
     for k, v in pairs(srv) do
