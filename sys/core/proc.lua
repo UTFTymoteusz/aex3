@@ -35,6 +35,7 @@ function sys.process_create(path, args, dir, sec_assoc)
     local fd, res = sys.fs_open(path, 'r')
 
     if not fd then return fd, res end
+    if fd.isDevice then return nil, 'File is a device' end
 
     local func, rr = loadstring(fd:read(), path)
 
@@ -119,6 +120,7 @@ function sys.process_replace(path, args, dir, sec_assoc)
     local fd, res = sys.fs_open(path, 'r')
 
     if not fd then return fd, res end
+    if fd.isDevice then return nil, 'File is a device' end
 
     local func, rr = loadstring(fd:read(), path)
 
