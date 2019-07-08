@@ -156,3 +156,20 @@ function sys.fs_mount(dev_path, path)
 
     return true 
 end
+function sys.fs_unmount(path)
+    if not path then error('sys.fs_unmount: Missing arguments') end
+
+    if   path[1] ~= '/'   then path = '/' .. path end
+    if path[#path] ~= '/' then path = path .. '/' end
+
+    if path == '/' then return false, aex_int.result.doing_this_would_make_the_system_unstable_error end
+
+    if not mounts[path] then return false, aex_int.result.file_not_found_error end
+
+    -- implement busy checks
+
+    mounts[path]:close()
+    mounts[path] = nil
+
+    return true
+end

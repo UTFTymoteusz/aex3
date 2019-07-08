@@ -127,8 +127,16 @@
             <li>On failure: [nil] nil, [number] Failure Code</li>
         </ul>
 
+        <h2>sys.fs_mount([string] mount_path)</h2>
+        <p>Unmounts the device that was mounted at the specified path</p>
+        <h4>Returns:</h4>
+        <ul>
+            <li>On success: [bool] true</li>
+            <li>On failure: [nil] nil, [number] Failure Code</li>
+        </ul>
+
         <h2>sys.process_create([string] path, [ [table] args, [string] work_dir, [string] sec_assoc ])</h2>
-        <p>Creates a process. Keep in mind that a process needs to be started with the :Start() method in the Process Control Object</p>
+        <p>Creates a process. Keep in mind that a process needs to be started with the :start() method in the Process Control Object</p>
         <h4>Returns:</h4>
         <ul>
             <li>On success: [table] <a href="https://add.the.goddamned.reference.jesus">Process control object</a></li>

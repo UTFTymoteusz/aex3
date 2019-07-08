@@ -4,6 +4,7 @@
 local res = {}
 local translations = {
     [0x0000] = 'Success',
+    [-0x1001] = 'Doing this would make the system unstable',
     [-0xA001] = 'User already exists',
     [-0xA002] = 'Access denied',
     [-0xD001] = 'Invalid device',

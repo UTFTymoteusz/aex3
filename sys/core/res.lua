@@ -3,6 +3,7 @@
 local aex_int = sys.get_internal_table()
 aex_int.result = {
     success = 0,
+    doing_this_would_make_the_system_unstable_error = -0x1001,
     user_already_exists_error = -0xA001,
     access_denied_error = -0xA002,
     invalid_device_error = -0xD001,

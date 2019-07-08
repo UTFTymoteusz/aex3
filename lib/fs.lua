@@ -93,4 +93,7 @@ end
 function fs.mount(dev_path, path)
     return sys.fs_mount(dev_path, path)
 end
+function fs.unmount(path)
+    return sys.fs_unmount(path)
+end
 return fs
