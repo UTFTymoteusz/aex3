@@ -8,6 +8,7 @@ local translations = {
     [-0xA002] = 'Access denied',
     [-0xD001] = 'Invalid device',
     [-0xD002] = 'No such device',
+    [-0xD003] = 'Device already mounted',
     [-0xFD01] = 'No such file or directory',
 }
 res.translations = translations
