@@ -13,7 +13,7 @@ function fs.read(path)
     local fd, r = fs.open(path, 'r')
     if not fd then return fd, r end
 
-    local dat = fd:read()
+    local dat = fd:read('*a')
     fd:close()
 
     return dat

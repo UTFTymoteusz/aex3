@@ -37,7 +37,9 @@ function sys.process_create(path, args, dir, sec_assoc)
     if not fd then return fd, res end
     if fd.isDevice then return nil, 'File is a device' end
 
-    local func, rr = loadstring(fd:read(), path)
+    local func, rr = loadstring(fd:read('*a'), path)
+
+    fd:close()
 
     if not func then return nil, rr
     elseif type(func) == 'string' then return nil, tostring(func)
@@ -56,7 +58,7 @@ function sys.process_create(path, args, dir, sec_assoc)
         local success, new_user = sys.sec_assoc_verify_and_user(sec_assoc)
         if success then
             user = new_user
-        else return nil, aex_int.result.access_denied_error end
+        else return nil, 'Access denied' end
     end
     local dir = dir
     if not dir then dir = table.concat(p_s, "/", 1, #p_s - 1) end
@@ -123,6 +125,8 @@ function sys.process_replace(path, args, dir, sec_assoc)
     if fd.isDevice then return nil, 'File is a device' end
 
     local func, rr = loadstring(fd:read(), path)
+
+    fd:close()
 
     if not func then return nil, rr
     elseif type(func) == 'string' then return nil, tostring(func)

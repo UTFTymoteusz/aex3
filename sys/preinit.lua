@@ -7,7 +7,7 @@ if sys.fs_exists('/cfg/fstab') then
     tty.writeln('Mounting storage devices defined in /cfg/fstab')
 
     local fd = sys.fs_open('/cfg/fstab')
-    local str = fd:read()
+    local str = fd:read('*a')
     fd:close()
 
     for k, v in pairs(string.split(str, '\n')) do
@@ -34,7 +34,7 @@ else tty.writeln('/cfg/fstab not found') end
 
 if sys.fs_exists('/cfg/hostname') then
     local f = sys.fs_open('/cfg/hostname', 'r')
-    aex_int.hostname = f:read()
+    aex_int.hostname = f:read('*a')
     f:close()
 end
 

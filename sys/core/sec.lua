@@ -104,7 +104,7 @@ local function sec_init()
     local fd = sys.fs_open('/cfg/passwd', 'r')
     if not fd then return end
 
-    local s = string.split(fd:read(), '\n')
+    local s = string.split(fd:read('*a'), '\n')
     for _, v in pairs(s) do
         v = string.trim(v)
         if #v == 0 then goto xcontinue end

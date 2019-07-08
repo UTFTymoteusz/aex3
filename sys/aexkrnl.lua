@@ -125,7 +125,7 @@ local function readFile(path)
     if sys.fs_open then
         local f = sys.fs_open(path, 'r')
         if not f then return nil end
-        return f:read(), f:close()
+        return f:read('*a'), f:close()
     end
     return aex_int.boot.readFile(path)
 end

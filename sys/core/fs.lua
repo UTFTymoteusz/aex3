@@ -35,47 +35,37 @@ function sys.fs_open(path, mode)
     local mount, path_r = getMount(path)
     if not mount then return nil, aex_int.result.no_such_file_or_directory end
 
-    local ret = {position = 1}
+    local ret = {}
+    local fd, r = mount:fd_open(path_r, mode)
+
+    if not fd then return nil, r end
 
     if mode == 'r' then
-        local data, c = mount:fileRead(path_r)
-        if not data or type(data) ~= 'string' then return nil, aex_int.result.no_such_file_or_directory end
-
-        function ret.read(self, len)
-            if not len then
-                local dd = string.sub(data, ret.position)
-                ret.position = #data + 1
-
-                return dd
-            end
-            if len < 0 then return '' end
-
-            local start = ret.position
-            ret.position = math.clamp(ret.position + len, 1, #data + 1)
-
-            return string.sub(data, start, len)
-        end
-        function ret.close(self)
-            ret = nil
+        function ret:read(len)
+            len = len or '*a'
+            return mount:fd_read(fd, len)
         end
     elseif mode == 'w' then
-        local data = ''
-        function ret.write(self, dw)
-            if not dw then return end
-            dw           = tostring(dw)
-            ret.position = ret.position + #dw
-
-            data = data .. dw
-        end
-        function ret.flush(self)
-            mount:fileWrite(path_r, data)
-        end
-        function ret.close(self)
-            ret:flush()
-            ret = nil
+        function ret:write(str)
+            if not str then return end
+            return mount:fd_write(fd, str)
         end
     end
+
+    function ret:seek(op, offset)
+        return mount:fd_seek(fd, op, offset)
+    end
+    function ret:flush()
+        return mount:fd_flush(fd)
+    end
+    function ret:close()
+        ret:flush(fd)
+        mount:fd_close(fd)
+        ret = nil
+    end
+
     ret.path = path
+
     return ret
 end
 function sys.fs_exists(path)

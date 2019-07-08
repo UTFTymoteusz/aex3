@@ -16,7 +16,7 @@ function require(lib)
         fd = sys.fs_open(p, 'r')
         if not fd then goto xcontinue end
 
-        local code = fd:read()
+        local code = fd:read('*a')
         local rr
         code, rr = loadstring(code, p)
 
