@@ -10,7 +10,8 @@ local proc_assocs = {}
 
 local function sha256_salt(thing)
     thing = '%12' .. thing .. crypto.sha256(thing) .. 'd2#c' .. thing .. 'avx*&%' 
-    thing = string.replace(crypto.sha256(thing), 'A', 'H') .. crypto.sha256(thing) .. crypto.sha256(thing .. crypto.sha256(thing))
+
+    sleep(100)
 
     return crypto.sha256(thing)
 end
@@ -95,7 +96,7 @@ function sys.sec_assoc_verify_and_user(id_or_assoc)
     if acc then
         if acc.pass == sha256_salt(assoc.pass) then return true, assoc.user end
     end
-    sleep(250)
+    sleep(400)
     return false
 end
 
