@@ -2,14 +2,21 @@
 local aex_int = sys.get_internal_table()
 
 function sys.drvmgr_load(path)
+    aex_int.assertType(path, 'string')
+
     if aex_int.started and sys.get_running_pid() ~= 0 then
         return aex_int.runInKernel(function()
-            sys.drvmgr_load(path)
+            return sys.drvmgr_load(path)
         end)
     end
+    if string.sub(path, 1, 9) ~= '/sys/drv/' then
+        path = '/sys/drv/' .. path end
+    if string.sub(path, #path - 3) ~= '.drv' then
+        path = path .. '.drv' end
+
     if sys.fs_exists and not sys.fs_exists(path) then
-        return nil, 'No such file or directory'
-    end
+        return nil, 'No such file or directory' end
+
     local code = aex_int.readFile(path)
     code, rr = loadstring(code, path)
 

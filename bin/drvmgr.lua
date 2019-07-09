@@ -50,26 +50,26 @@ elseif op == 'd' or op == 'disable' then
         return
     end
     local s, r = sys.drvmgr_disable(toID(args[2]))
-    if not s then stderr:writeln('drvmgr: ' .. r) end
+    if not s then stderr:writeln('drvmgr: ' .. (r or 'Unknown error')) end
 elseif op == 'e' or op == 'enable' then
     if not args[2] then
         stderr:writeln('drvmgr: Missing argument')
         return
     end
     local s, r = sys.drvmgr_enable(toID(args[2]))
-    if not s then stderr:writeln('drvmgr: ' .. r) end
+    if not s then stderr:writeln('drvmgr: ' .. (r or 'Unknown error')) end
 elseif op == 'l' or op == 'load' then
     if not args[2] then
         stderr:writeln('drvmgr: Missing argument')
         return
     end
     local s, r = sys.drvmgr_load(args[2])
-    if not s then stderr:writeln('drvmgr: ' .. r) end
+    if not s then stderr:writeln('drvmgr: ' .. (r or 'Unknown error')) end
 elseif op == 'u' or op == 'ul' or op == 'unload' then
     if not args[2] then
         stderr:writeln('drvmgr: Missing argument')
         return
     end
     local s, r = sys.drvmgr_unload(toID(args[2]))
-    if not s then stderr:writeln('drvmgr: ' .. r) end
+    if not s then stderr:writeln('drvmgr: ' .. (r or 'Unknown error')) end
 end
