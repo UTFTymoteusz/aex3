@@ -78,6 +78,7 @@ function sys.process_create(path, args, dir, sec_assoc)
                 user   = user,
                 args   = args,
                 dir    = dir,
+                env    = env,
                 parent = c_pid,
                 threads = {cout},
                 next_thread_id = 2,
@@ -155,6 +156,7 @@ function sys.process_replace(path, args, dir, sec_assoc)
     info.user = user
     info.args = args
     info.dir  = dir
+    info.env  = env
     info.threads  = {cout}
 
     waitOne()

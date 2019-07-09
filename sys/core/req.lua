@@ -25,7 +25,11 @@ function require(lib)
 
         if not code then error(rr)
         elseif type(code) == 'function' then
-            setfenv(code, getfenv())
+            if sys.get_running_pid() ~= 0 then
+                setfenv(code, aex_int.processes[sys.get_running_pid()].env)
+            else
+                setfenv(code, getfenv())
+            end
         else error(code) end
         do return code() end
         ::xcontinue::
