@@ -151,6 +151,8 @@ function sys.fs_mount(dev_path, path)
     if not dev then return false, aex_int.result.file_not_found_error end
     if aex_int.dev_marks[dev_path] ~= 'hdd' then return false, aex_int.result.invalid_device_error end
 
+    if mounts[path] then return false, aex_int.result.access_denied_error end
+
     for k, v in pairs(mounts) do
         if v.path == dev_path then return false, aex_int.result.already_mounted_error end
     end
