@@ -7,6 +7,7 @@ function sys.set_hostname(name)
 
     local f = sys.fs_open('/cfg/hostname', 'w')
     f:write(name)
+    f:flush()
     f:close()
 
     aex_int.hostname = name

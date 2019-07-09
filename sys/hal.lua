@@ -65,9 +65,10 @@ elseif boot_kind == 'gmod_rh_sf' then
     hal.hdd = {
         fd_open = function(id, path, mode)
             drive = drives[id]
-            local fd, rr, rr2 = (hook.runRemote(drive[1], 'hddaccess', drive[2], 11, path, mode)[1] or {})[1]
+            local fd, rr, rr2 = unpack((hook.runRemote(drive[1], 'hddaccess', drive[2], 11, path, mode)[1] or {})[1])
 
             if not fd then
+                if rr == 2312 then return fd, -0xFD01 end
                 if rr == 6623 then return fd, -0xFD02 end
                 return fd, rr, rr2
             end

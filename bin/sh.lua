@@ -2,6 +2,7 @@ local ansi = require('ansi')
 local fs   = require('fs')
 local os   = require('os')
 local proc = require('proc')
+local res  = require('res')
 local sh   = require('sh')
 local thread = require('thread')
 
@@ -89,7 +90,9 @@ local function exec(entry)
         if fs.getExtension(v.bin) ~= 'lua' then io.writeln('sh: ' .. v.bin .. ': Not an executable') goto xcontinue end
 
         local pp, err = proc.create(v.bin, v.args, current_dir)
-        if not pp then io.writeln('sh: ' .. v.bin .. ': Invalid executable ' .. err) goto xcontinue end
+
+        if type(err) == 'number' then err = res.translate(err) end
+        if not pp then io.writeln('sh: ' .. v.bin .. ': ' .. (err or 'Unknown error')) goto xcontinue end
 
         local input_th = thread.create(function()
             local c, b

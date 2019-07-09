@@ -129,6 +129,7 @@ local function sec_save()
 
         fd:write(';\n')
     end
+    fd:flush()
     fd:close()
 end
 sec.init = sec_init

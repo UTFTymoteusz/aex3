@@ -1,6 +1,9 @@
 --@EXT km
 local aex_int = sys.get_internal_table()
 local mounts  = aex_int.mounts
+local handles = {}
+
+aex_int.file_handles = handles
 
 local function getMount(path)
     local mount, path_r, most, cnt = nil, nil, 0, 6666666
@@ -59,9 +62,13 @@ function sys.fs_open(path, mode)
         return mount:fd_flush(fd)
     end
     function ret:close()
-        ret:flush(fd)
         mount:fd_close(fd)
         ret = nil
+    end
+
+    if aex_int.started then
+        handles[sys.get_running_pid()] = handles[sys.get_running_pid()] or {}
+        handles[sys.get_running_pid()][fd] = ret
     end
 
     ret.path = path
@@ -170,3 +177,13 @@ function sys.fs_get_mounts()
     end
     return ret
 end
+
+aex_int.syshook.add('process_end', 'fs handle disposal', function(pid)
+    if handles[pid] then
+
+        for k, v in pairs(handles[pid]) do
+            v:close()
+        end
+        handles[pid] = nil
+    end
+end)
