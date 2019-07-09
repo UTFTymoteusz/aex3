@@ -55,18 +55,17 @@ function aex_int.assertType(val, typec, ignore_nil)
 end
 function aex_int.runInKernel(func)
     aex_int.next_thread_k_id = aex_int.next_thread_k_id + 1
+    
     local id = aex_int.next_thread_k_id
-    local ret = {}
+    local s, r, a, b, c, d
 
     aex_int.threads_k[id] = coroutine.create(function()
-        local ret = {pcall(func)}
-        if not ret[1] then ret = {} end
-
-        table.remove(ret, 1)
+        s, r, a, b, c, d = pcall(func)
+        if not s then r, a, b, c, d = nil, nil, nil, nil, nil end
     end)
 
     while aex_int.threads_k[id] do waitOne() end
-    return unpack(ret)
+    return r, a, b, c, d
 end
 
 local    log = {}
