@@ -33,6 +33,7 @@ function fs.write(path, data)
     if not fd then return fd, r end
 
     fd:write(data)
+    fd:flush()
     fd:close()
 
     return true

@@ -117,6 +117,7 @@ local function sec_init()
         sec.accounts[ v[1] ] = {pass = pass}
         ::xcontinue::
     end
+    fd:close()
 end
 local function sec_save()
     local fd = sys.fs_open('/cfg/passwd', 'w')
