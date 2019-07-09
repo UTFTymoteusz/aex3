@@ -16,6 +16,7 @@ local file_write  = hal.hdd.file_write
 local file_list   = hal.hdd.file_list
 local file_delete = hal.hdd.file_delete
 local dir_create  = hal.hdd.dir_create
+local file_size   = hal.hdd.file_size
 
 local devid = 0
 
@@ -49,10 +50,11 @@ local function enable()
                     return fd_close(id, fd)
                 end,
 
-                fileExists = function(self, path)       return file_exists(id, path) end,
-                fileList   = function(self, path)       return file_list(id,   path) end,
-                fileDelete = function(self, path)       return file_delete(id, path) end,
-                dirCreate  = function(self, path)       return dir_create(id,  path) end,
+                fileExists = function(self, path) return file_exists(id, path) end,
+                fileList   = function(self, path) return file_list(id,   path) end,
+                fileDelete = function(self, path) return file_delete(id, path) end,
+                dirCreate  = function(self, path) return dir_create(id,  path) end,
+                fileSize   = function(self, path) return file_size(id,   path) end,
             }
         end)
         sys.mark_device('hdd' .. devid, 'hdd')

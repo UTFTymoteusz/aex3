@@ -54,6 +54,10 @@ function fs.makedir(path)
     path = fs.translate(get_info().dir, path)
     return sys.fs_mkdir(path)
 end
+function fs.size(path)
+    path = fs.translate(get_info().dir, path)
+    return sys.fs_size(path)
+end
 function fs.translate(basedir, path)
     if not basedir or not path then return nil end
 

@@ -129,6 +129,10 @@ elseif boot_kind == 'gmod_rh_sf' then
             drive = drives[id]
             return (hook.runRemote(drive[1], 'hddaccess', drive[2], 5, path)[1] or {})[1]
         end,
+        file_size = function(id, path)
+            drive = drives[id]
+            return (hook.runRemote(drive[1], 'hddaccess', drive[2], 6, path)[1] or {})[1]
+        end,
         get_all_ids = function()
             return table.getKeys(drives)
         end,

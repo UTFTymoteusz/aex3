@@ -135,6 +135,14 @@ function sys.fs_mkdir(path)
 
     return mount:dirCreate(path_r)
 end
+function sys.fs_size(path)
+    if not path then error('sys.fs_size: Missing path') end
+
+    local mount, path_r = getMount(path)
+    if not mount then return nil end
+
+    return mount:fileSize(path_r)
+end
 function sys.fs_mount(dev_path, path)
     if not dev_path or not path then error('sys.fs_mount: Missing arguments') end
 
