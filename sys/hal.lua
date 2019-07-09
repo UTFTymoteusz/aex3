@@ -145,4 +145,51 @@ elseif boot_kind == 'gmod_rh_sf' then
             return timer.systime() - start
         end,
     }
+    if chipset.Components.IO and #chipset.Components.IO > 0 then
+        local io = chipset.Components.IO
+        local buffers = {}
+
+        hal.serial = {
+            clear = function(id)
+                return (hook.runRemote(io[1], io[2], 114, id)[1] or {})[1]
+            end,
+            write = function(id, str)
+                return (hook.runRemote(io[1], io[2], 111, id, str)[1] or {})[1]
+            end,
+            read = function(id, len)
+                local a
+                if not len then
+                    a = buffers[id]
+                    buffers[id] = ''
+                    
+                    return a
+                else
+                    b = buffers[id]
+                    a = string.sub(b, 1, len)
+                    buffers[id] = string.sub(b, len + 1)
+                    return a
+                end
+            end,
+            get_all_ids = function() 
+                local fan = {} 
+                for i = 0, (hook.runRemote(io[1], io[2], 113)[1] or {})[1] - 1 do
+                    fan[#fan + 1] = i
+                end
+                return fan
+            end,
+        }
+        for _, v in pairs(hal.serial.get_all_ids()) do
+            buffers[v] = ''
+        end
+        cpu.handleInterrupt('serial', function(port, data) 
+            buffers[port] = buffers[port] .. data
+        end)
+    else
+        hal.serial = {
+            close = function() end,
+            write = function() end,
+            read  = function() end,
+            get_all_ids = function() return {} end,
+        }
+    end
 end

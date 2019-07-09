@@ -55,7 +55,7 @@ function aex_int.assertType(val, typec, ignore_nil)
 end
 function aex_int.runInKernel(func)
     aex_int.next_thread_k_id = aex_int.next_thread_k_id + 1
-    
+
     local id = aex_int.next_thread_k_id
     local s, r, a, b, c, d
 
@@ -206,6 +206,7 @@ else tty_i.writeln(log.none() .. 'No early init found for ' .. boot_kind) end
 tty_i.writeln('Enumerating hardware and loading drivers')
 loadDriverOrHalt('/sys/drv/ram.drv')
 loadDriverOrHalt('/sys/drv/hddh.drv')
+loadDriverOrHalt('/sys/drv/ttySh.drv')
 
 local tty_input_buffer = ''
 do
