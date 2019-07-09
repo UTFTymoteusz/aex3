@@ -111,8 +111,8 @@ local function exec(entry)
                 else pp.stdin:write(c) end
             end
         end)
-        pp.stdout:bind(io.getstdout())
-        pp.stderr:bind(io.getstderr())
+        pp.stdout:bind(io.stdout)
+        pp.stderr:bind(io.stderr)
 
         pp:start()
         pp:wait()

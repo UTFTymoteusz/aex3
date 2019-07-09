@@ -9,6 +9,16 @@ stderr = {}
 local processes = aex_int.processes
 local g_pid = sys.get_running_pid
 
+local function getstdin()
+    return processes[g_pid()].stdin
+end
+local function getstdout()
+    return processes[g_pid()].stdout
+end
+local function getstderr()
+    return processes[g_pid()].stderr
+end
+
 function io.getGenericStream()
     local buffer = ''
     local bound = nil
@@ -39,9 +49,9 @@ function io.getGenericStream()
             return data
         end
         function stream.bind(self, bnd)
-            if not bnd then throw('stdstr: No binding stream specified') end
-            if type(bnd) ~= 'table' then throw('stdstr: Invalid stream argument specified (are you sure you are calling with : and not .?)') end
-            if not bnd.write and not bnd.read then throw('stdstr: Stream is not readable nor writeable, is it a block device file? (Must be stream device, at least)') end
+            if not bnd then error('stdstr: No binding stream specified', 2) end
+            if type(bnd) ~= 'table' then error('stdstr: Invalid stream argument specified (are you sure you are calling with : and not .?)', 2) end
+            if not bnd.write and not bnd.read then error('stdstr: Stream is not readable nor writeable, is it a block device file? (Must be stream device, at least)', 2) end
 
             setmetatable(stream, {
                 __index = function(self, key)
@@ -63,10 +73,10 @@ function io.getGenericStream()
     end
 end
 function stdin:read(len)
-    return processes[g_pid()].stdin:read(len)
+    return getstdin():read(len)
 end
 function stdout:write(...)
-    local stdout = processes[g_pid()].stdout
+    local stdout = getstdout()
     for _, v in pairs({...}) do
         stdout:write(v)
     end
@@ -76,7 +86,7 @@ function stdout:writeln(...)
     stdout:write('\r\n')
 end
 function stderr:write(...)
-    local stderr = processes[g_pid()].stderr
+    local stderr = getstderr()
     for _, v in pairs({...}) do
         stderr:write(v)
     end
@@ -115,18 +125,24 @@ function io.writeln(...)
     stdout:write(...)
     stdout:write('\r\n')
 end
-function io.getstdin()
-    return processes[g_pid()].stdin
-end
-function io.getstdout()
-    return processes[g_pid()].stdout
-end
-function io.getstderr()
-    return processes[g_pid()].stderr
-end
 function io.isATTY(file_object)
     return file_object.type == 'tty'
 end
+
+setmetatable(io, {
+    __index = function(io, key)
+        if key == 'stdin' then
+            return getstdin()
+        elseif key == 'stdout' then
+            return getstdout()
+        elseif key == 'stderr' then
+            return getstderr()
+        else
+            return io[key]
+        end
+    end,
+})
+
 --function print()
 --
 --end

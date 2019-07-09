@@ -17,10 +17,10 @@ function sh.getDir()
     return dat.dir
 end
 function sh.getTTY()
-    return io.getstdout().path
+    return io.stdout.path
 end
 function sh.getTTYSize()
-    local x, y = io.getstdout():getSize()
+    local x, y = io.stdout:getSize()
     return x or 0, y or 0
 end
 function sh.parseArgs(args, skipEmpty)

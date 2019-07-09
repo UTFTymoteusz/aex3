@@ -246,59 +246,34 @@ function aex_int.proc.begin_task_loop()
     end
 end
 function aex_int.proc.get_safeguard_env()
-    local env
-    env = {
-        loadstring = function(...)
-            local code = loadstring(...)
-            if type(code) == 'function' then
-                setfenv(code, env)
-            end
-            return code
-        end,
-        print = print,
-        stdin  = stdin,
-        stdout = stdout,
-        stderr = stderr,
-        tostring = tostring,
-        tonumber = tonumber,
-        waitOne = waitOne,
-        sleep   = sleep,
-        isValid = isValid,
-        require = require,
-        getfenv = getfenv,
-        setfenv = setfenv,
-        rawget = rawget,
-        rawset = rawset,
-        assert = assert,
-        ipairs = ipairs,
-        fastlz = fastlz,
-        string = string,
-        xpcall = xpcall,
-        pcall  = pcall,
-        setmetatable = setmetatable,
-        getmetatable = getmetatable,
-        coroutine = coroutine,
-        quotaUsed = quotaUsed,
-        quotaAverage = quotaAverage,
-        quotaTotalAverage = quotaTotalAverage,
-        quotaTotalUsed = quotaTotalUsed,
-        printTable = printTable,
-        quotaMax = quotaMax,
-        throw = throw,
-        error = error,
-        pairs = pairs,
-        table = table,
-        http = http,
-        math = math,
-        json = json,
-        next = next,
-        type = type,
-        crc  = crc,
-        bit  = bit,
-        von  = von,
-        sys  = sys,
-        try  = try,
-        io   = io ,
+    local env = {}
+    local include = {
+        'assert', 'error', 'getmetatable', 'ipairs',
+                 'next', 'pairs', 'pcall', 'print',
+        'rawequal', 'rawget', 'rawlen', 'rawset',
+        'require', 'select', 'setmetatable', 'tonumber',
+        'tostring', 'type', 'xpcall',
+
+        'coroutine', 'io', 'math', 'string', 'table',
+
+        -- not standard
+        'sleep', 'waitOne', 'stdin', 'stdout', 'stderr',
+        'printTable',
+
+        -- not standard because stupid Lua
+        'getfenv', 'setfenv',
     }
+    local fenv = getfenv()
+    for _, v in pairs(include) do
+        env[v] = _G[v]
+    end
+
+    function env.loadstring(...)
+        local code = loadstring(...)
+        if type(code) == 'function' then
+            setfenv(code, env)
+        end
+        return code
+    end
     return table.copy(env)
 end

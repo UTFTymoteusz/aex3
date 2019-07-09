@@ -16,7 +16,7 @@ if not fd then
     return
 end
 
-io.getstdin():bind(fd)
+io.stdin:bind(fd)
 
 thread.create(function()
     while true do

@@ -7,7 +7,7 @@ if #list == 0 then return end
 
 table.sort(list, function(a, b) return a.name < b.name end)
 
-if not io.isATTY(io.getstdout()) then
+if not io.isATTY(io.stdout) then
     local name
     for k, v in pairs(list) do
         name = v.name
