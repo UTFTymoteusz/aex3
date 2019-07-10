@@ -1,4 +1,13 @@
 --@EXT drv
+info = {
+    full_name = 'HDD Hub Driver',
+    name = 'hddh',
+    type = 'hub',
+    provider = 'Tymkboi',
+    version  = '1.1',
+    disallow_disable = true,
+}
+
 local aex_int = sys.get_internal_table()
 local hal  = aex_int.hal
 local boot = aex_int.boot
@@ -20,9 +29,7 @@ local file_size   = hal.hdd.file_size
 
 local devid = 0
 
-local driver = {}
-
-local function enable()
+local function enable_internal()
 
     for _, id in pairs(hal.hdd.get_all_ids()) do
 
@@ -65,24 +72,17 @@ local function enable()
     end
 end
 
-driver.full_name = 'HDD Hub Driver'
-driver.name = 'hddh'
-driver.type = 'hub'
-driver.provider = 'Tymkboi'
-driver.version  = '1.1'
-driver.disallow_disable = true
-
-function driver.load()
+function load()
 
 end
-function driver.unload()
+function unload()
 
 end
-function driver.enable()
-    enable()
+function enable()
+    enable_internal()
     return true
 end
-function driver.disable()
+function disable()
     return false
 end
 

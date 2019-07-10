@@ -1,4 +1,13 @@
 --@EXT drv
+info = {
+    full_name = 'Serial Hub Driver',
+    name = 'ttySh',
+    type = 'hub',
+    provider = 'Tymkboi',
+    version  = '1.0',
+    disallow_disable = true,
+}
+
 local aex_int = sys.get_internal_table()
 local hal  = aex_int.hal
 local boot = aex_int.boot
@@ -9,9 +18,7 @@ local tty_clear = hal.serial.clear
 
 local devid = 0
 
-local driver = {}
-
-local function enable()
+local function enable_internal()
 
     for _, id in pairs(hal.serial.get_all_ids()) do
 
@@ -47,25 +54,16 @@ local function enable()
     end
 end
 
-driver.full_name = 'Serial Hub Driver'
-driver.name = 'ttySh'
-driver.type = 'hub'
-driver.provider = 'Tymkboi'
-driver.version  = '1.0'
-driver.disallow_disable = true
-
-function driver.load()
+function load()
 
 end
-function driver.unload()
+function unload()
 
 end
-function driver.enable()
-    enable()
+function enable()
+    enable_internal()
     return true
 end
-function driver.disable()
+function disable()
     return false
 end
-
-return driver

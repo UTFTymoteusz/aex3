@@ -12,7 +12,7 @@ function sys.drvmgr_load(path)
     if string.sub(path, 1, 9) ~= '/sys/drv/' then
         path = '/sys/drv/' .. path end
     if string.sub(path, #path - 3) ~= '.drv' then
-        path = path .. '.drv' end
+        path = path .. '.drv'      end
 
     if sys.fs_exists and not sys.fs_exists(path) then
         return nil, 'No such file or directory' end
@@ -26,14 +26,41 @@ function sys.drvmgr_load(path)
         return nil, tostring(code)
     end
 
-    setfenv(code, getfenv())
+    local env = table.copy(getfenv())
+    local owned = {}
 
-    local s, drv, ax, bx, cx, dx = pcall(code)
+    env.sys.drvmgr_claim = function(name)
+        aex_int.assertType(name, 'string')
+    
+        if string.sub(name, 1, 5) ~= '/dev/' then name = '/dev/' .. name end
+        table.add(owned, {name})
 
-    if not s then   return nil, tostring(drv) end
-    if not drv then return nil, 'Invalid driver file (no table returned)' end
-    if type(drv) ~= 'table' then
-        return nil, 'Invalid driver file (table not returned, got ' .. type(drv) .. ')'
+        return true
+    end
+    setfenv(code, env)
+
+    local s, r = pcall(code)
+
+    if not s then return nil, tostring(drv) end
+    if not env.info or type(env.info) ~= 'table' then 
+        return nil, 'Driver did not set a global info table' end
+    
+    local drv = {
+        full_name = env.info.full_name,
+        name      = env.info.name,
+        type      = env.info.type,
+        provider  = env.info.provider,
+        version   = env.info.version,
+
+        load    = env.load,
+        unload  = env.unload,
+        enable  = env.enable,
+        disable = env.disable,
+    }
+
+    for k, v in pairs(aex_int.drivers) do
+        if drv.name == v.base.name then
+            return nil, 'Specified driver does not allow multiple instances of itself' end
     end
 
     local required = {
@@ -49,8 +76,8 @@ function sys.drvmgr_load(path)
         ['disable'] = 'function',
     }
     for index, typew in pairs(required) do
-        if not drv[index] then return nil, 'Missing fields in driver table (' .. index .. ', type ' .. typew .. ')' end
-        if type(drv[index]) ~= typew then return nil, 'Invalid fields in driver table (' .. index .. ' has to be of type ' .. typew .. ')' end
+        if not drv[index] then return nil, 'Missing globals in driver env (' .. index .. ', type ' .. typew .. ')' end
+        if type(drv[index]) ~= typew then return nil, 'Invalid globals in driver env (' .. index .. ' has to be of type ' .. typew .. ')' end
     end
 
     if not drv.description then
@@ -62,17 +89,11 @@ function sys.drvmgr_load(path)
     aex_int.drivers[nid] = {
         base = drv,
         enabled = true,
-        owned = {},
-        disallow_disable = drv.disallow_disable,
+        owned = owned,
+        disallow_disable = env.info.disallow_disable,
+        allow_multiple_instances = env.info.allow_multiple_instances,
     }
     do
-        local env = table.copy(getfenv(sys.drvmgr_load)) -- Limited trust
-
-        setfenv(drv.load,    env)
-        setfenv(drv.unload,  env)
-        setfenv(drv.enable,  env)
-        setfenv(drv.disable, env)
-
         local s, r
         s, r = pcall(drv.load)
         if not s then return nil, 'Driver error: ' .. r end
@@ -155,17 +176,7 @@ function sys.drvmgr_info(id)
         owned_devices = drv.owned,
     }
 end
-function sys.drvmgr_claim(name, driver)
+function sys.drvmgr_claim(name)
     aex_int.assertType(name, 'string')
-    aex_int.assertType(driver, 'table')
-
-    if string.sub(name, 1, 5) ~= '/dev/' then name = '/dev/' .. name end
-
-    for k, v in pairs(aex_int.drivers) do
-        if v.base == driver then
-            table.add(v.owned, {name})
-            return true
-        end
-    end
     return false
 end

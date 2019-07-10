@@ -1,20 +1,21 @@
 --@EXT drv
+info = {
+    driver.full_name = '.NET Keyboard Bridge',
+    driver.name = 'netkb',
+    driver.type = 'input',
+    driver.provider = 'Tymkboi',
+    driver.version  = '1.0',
+}
+
 local thread
-local driver = {}
 
-driver.full_name = '.NET Keyboard Bridge'
-driver.name = 'netkb'
-driver.type = 'input'
-driver.provider = 'Tymkboi'
-driver.version  = '1.0'
-
-function driver.load()
+function load()
 
 end
-function driver.unload()
+function unload()
 
 end
-function driver.enable()
+function enable()
     thread = sys.thread_create(function()
         local kb_t = sys.input_add_device('netkb')
         local ckeys, bkeys, act = {}, {}
@@ -34,9 +35,7 @@ function driver.enable()
     end)
     return true
 end
-function driver.disable()
+function disable()
     thread:abort()
     return true
 end
-
-return driver

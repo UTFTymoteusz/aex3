@@ -1,24 +1,25 @@
 --@EXT drv
-local driver = {}
-local thread = {}
+info = {
+    full_name = 'Pseudo Devices Driver',
+    name = 'pdevs',
+    type = 'pseudo',
+    provider = 'Tymkboi',
+    version  = '1.0',
+}
 
-driver.full_name = 'Pseudo Devices Driver'
-driver.name = 'pdevs'
-driver.type = 'pseudo'
-driver.provider = 'Tymkboi'
-driver.version  = '1.0'
+local thread
 
 local random_buffer, random_last
 local hal_core
 
-function driver.load()
+function load()
     local aex_int = sys.get_internal_table()
     hal_core = aex_int.hal.core
 end
-function driver.unload()
+function unload()
 
 end
-function driver.enable()
+function enable()
     random_last, random_buffer = 0, ''
 
     thread = sys.thread_create(function()
@@ -41,7 +42,7 @@ function driver.enable()
             end,
         }
     end)
-    sys.drvmgr_claim('null', driver)
+    sys.drvmgr_claim('null')
 
     sys.add_device('zero', function()
         return {
@@ -52,7 +53,7 @@ function driver.enable()
             end,
         }
     end)
-    sys.drvmgr_claim('zero', driver)
+    sys.drvmgr_claim('zero')
 
     sys.add_device('random', function()
         return {
@@ -84,7 +85,7 @@ function driver.enable()
             end,
         }
     end)
-    sys.drvmgr_claim('random', driver)
+    sys.drvmgr_claim('random')
 
     sys.add_device('urandom', function()
         local buff
@@ -100,11 +101,11 @@ function driver.enable()
             end,
         }
     end)
-    sys.drvmgr_claim('urandom', driver)
+    sys.drvmgr_claim('urandom')
 
     return true
 end
-function driver.disable()
+function disable()
     thread:abort()
 
     sys.remove_device('null')
@@ -114,5 +115,3 @@ function driver.disable()
 
     return true
 end
-
-return driver

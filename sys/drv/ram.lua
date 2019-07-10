@@ -1,4 +1,13 @@
 --@EXT drv
+info = {
+    full_name = 'RAM Access Driver',
+    name = 'ramacc',
+    type = 'storage',
+    provider = 'Tymkboi',
+    version  = '1.0',
+    disallow_disable = true,
+}
+
 local sectors = {{}}
 local function read(path)
     local current_sector = 1
@@ -100,22 +109,13 @@ local function delete(path)
     local current_sector = getPos(path)
 end
 
-local driver = {}
-
-driver.full_name = 'RAM Access Driver'
-driver.name = 'ramacc'
-driver.type = 'storage'
-driver.provider = 'Tymkboi'
-driver.version  = '1.0'
-driver.disallow_disable = true
-
-function driver.load()
+function load()
 
 end
-function driver.unload()
+function unload()
 
 end
-function driver.enable()
+function enable()
     sys.add_device('ram', function()
         local files = {}
         return {
@@ -128,11 +128,9 @@ function driver.enable()
         }
     end)
     sys.mark_device('ram', 'hdd')
-    sys.drvmgr_claim('ram', driver)
+    sys.drvmgr_claim('ram')
     return true
 end
-function driver.disable()
+function disable()
     return false
 end
-
-return driver
