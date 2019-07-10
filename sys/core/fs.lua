@@ -149,7 +149,7 @@ function sys.fs_mount(dev_path, path)
     local dev = sys.fs_open(dev_path)
 
     if not dev then return false, aex_int.result.file_not_found_error end
-    if aex_int.dev_marks[dev_path] ~= 'hdd' then return false, aex_int.result.invalid_device_error end
+    if aex_int.dev_marks[dev_path] ~= 'storage' then return false, aex_int.result.invalid_device_error end
 
     if mounts[path] then return false, aex_int.result.access_denied_error end
 

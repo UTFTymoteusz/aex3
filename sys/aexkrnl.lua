@@ -83,14 +83,17 @@ sys = {} -- syscalls, hooray
 function sys.get_internal_table()
     return aex_int
 end
-function sys.add_device(name, open_cb)
+function sys.add_device(name, open_cb, type)
     aex_int.assertType(name, 'string')
-    aex_int.assertType(open_cb,  'function')
+    aex_int.assertType(open_cb, 'function')
+    aex_int.assertType(type, 'string', true)
 
     if string.sub(name, 1, 5) ~= '/dev/' then name = '/dev/' .. name end
 
     aex_int.dev[name] = open_cb
-    aex_int.dev_marks[name] = 'generic'
+    type = type or 'generic'
+    type = string.lower(type)
+    aex_int.dev_marks[name] = type
 
     aex_int.printk(log.device() .. 'Added ' .. name)
     return true
@@ -104,16 +107,6 @@ function sys.remove_device(name)
     aex_int.dev_marks[name] = nil
 
     aex_int.printk(log.device() .. 'Removed ' .. name)
-    return true
-end
-function sys.mark_device(name, type)
-    if not name or not type then error('sys.mark_device: Missing arguments') end
-    if string.sub(name, 1, 5) ~= '/dev/' then
-        name = '/dev/' .. name
-    end
-    type = string.lower(type)
-    aex_int.dev_marks[name] = type
-
     return true
 end
 function sys.reset()
@@ -239,8 +232,7 @@ do
                 return x, y
             end,
         }
-    end)
-    sys.mark_device('tty0', 'tty')
+    end, 'tty')
 end
 tty_i.writeln(log.ok() .. 'Hardware enumeration complete')
 tty_i.writeln('')

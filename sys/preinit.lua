@@ -22,8 +22,8 @@ if sys.fs_exists('/cfg/fstab') then
         end
 
         local fd = sys.fs_open(exp[1], 'r')
-        if      not fd      then tty.writeln('Line ' .. k .. ': ' .. v .. ' not found')                goto xcontinue end
-        if fd.type ~= 'hdd' then tty.writeln('Line ' .. k .. ': ' .. v .. ' is not an storage device') goto xcontinue end
+        if        not fd        then tty.writeln('Line ' .. k .. ': ' .. v .. ' not found')                goto xcontinue end
+        if fd.type ~= 'storage' then tty.writeln('Line ' .. k .. ': ' .. v .. ' is not an storage device') goto xcontinue end
 
         sys.fs_mount(exp[1], exp[2])
         tty.writeln('Mounted ' .. exp[1] .. ' at ' .. exp[2])

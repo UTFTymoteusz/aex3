@@ -126,8 +126,7 @@ function enable()
             fileDelete = function(self, path)       return delete(path) end,
             dirCreate  = function(self, path)       return mkdir(path) end,
         }
-    end)
-    sys.mark_device('ram', 'hdd')
+    end, 'storage')
     sys.drvmgr_claim('ram')
     return true
 end

@@ -45,8 +45,7 @@ local function enable_internal()
                     end
                 end,
             }
-        end)
-        sys.mark_device('ttyS' .. devid, 'ttyS')
+        end, 'ttyS')
         sys.drvmgr_claim('ttyS' .. devid, driver)
 
         devid = devid + 1
