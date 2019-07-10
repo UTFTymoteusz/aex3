@@ -260,7 +260,7 @@ function aex_int.proc.get_safeguard_env()
 
         -- not standard
         'sleep', 'waitOne', 'stdin', 'stdout', 'stderr',
-        'printTable',
+        'printTable', 'sys',
 
         -- not standard because stupid Lua
         'getfenv', 'setfenv',
