@@ -1,4 +1,4 @@
---@EXT km
+--@EXT sys
 local aex_int = sys.get_internal_table()
 aex_int.proc = {}
 

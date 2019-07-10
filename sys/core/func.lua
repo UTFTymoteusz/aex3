@@ -1,5 +1,5 @@
---@EXT km
--- func.km: Provides extra syscalls
+--@EXT sys
+-- func.sys: Provides extra syscalls
 local aex_int = sys.get_internal_table()
 
 function sys.set_hostname(name)

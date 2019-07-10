@@ -1,5 +1,5 @@
---@EXT km
--- res.km: Common result codes
+--@EXT sys
+-- res.sys: Common result codes
 local aex_int = sys.get_internal_table()
 aex_int.result = {
     success = 0,
