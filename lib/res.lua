@@ -13,6 +13,8 @@ local translations = {
     [-0xD004] = 'No media inserted',
     [-0xFD01] = 'No such file or directory',
     [-0xFD02] = 'Resource or device busy',
+    [-0xFD03] = 'Is a directory',
+    [-0xFD04] = 'Is a file',
 }
 res.translations = translations
 

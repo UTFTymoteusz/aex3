@@ -12,4 +12,6 @@ aex_int.result = {
     no_media_inserted_error = -0xD004,
     no_such_file_or_directory = -0xFD01,
     resource_or_device_busy_error = -0xFD02,
+    is_a_directory_error = -0xFD03,
+    is_a_file_error = -0xFD04,
 }
