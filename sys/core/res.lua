@@ -14,4 +14,5 @@ aex_int.result = {
     resource_or_device_busy_error = -0xFD02,
     is_a_directory_error = -0xFD03,
     is_a_file_error = -0xFD04,
+    directory_not_empty_error = -0xFD05,
 }

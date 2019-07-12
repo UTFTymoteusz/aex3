@@ -15,6 +15,7 @@ local translations = {
     [-0xFD02] = 'Resource or device busy',
     [-0xFD03] = 'Is a directory',
     [-0xFD04] = 'Is a file',
+    [-0xFD05] = 'Directory not empty',
 }
 res.translations = translations
 
