@@ -58,6 +58,44 @@ function fs.size(path)
     path = fs.translate(get_info().dir, path)
     return sys.fs_size(path)
 end
+function fs.type(path)
+    path = fs.translate(get_info().dir, path)
+    return sys.fs_type(path)
+end
+function fs.copy(src_path, dst_path)
+    local buffer
+
+    local src_fd, cc = fs.open(src_path, 'r')
+    if not src_fd then return false, cc, false end
+
+    if fs.exists(dst_path) then
+
+        if fs.type(dst_path) == 'dir' then
+            return false, -0xFD03, true
+        end
+    end
+
+    local dst_fd, cc = fs.open(dst_path, 'w')
+    if not dst_fd then return false, cc, true end
+
+    local buffer
+
+    repeat
+        buffer = src_fd:read(512)
+
+        if #buffer == 0 then break end
+
+        dst_fd:write(buffer)
+    until false
+
+    src_fd:close()
+
+    dst_fd:flush()
+    dst_fd:close()
+
+    return true
+end
+
 function fs.translate(basedir, path)
     if not basedir or not path then return nil end
 
@@ -95,6 +133,15 @@ function fs.getExtension(path)
 
     return exp[#exp]
 end
+function fs.getFilename(path)
+    local dir = false
+
+    if #path > 1 and path[#path] == '/' then dir = true path = string.sub(path, 1, #path - 1) end
+    local split = string.split(path, '/')
+    
+    return split[#split] .. (dir and '/' or '')
+end
+
 function fs.mount(dev_path, path)
     return sys.fs_mount(dev_path, path)
 end

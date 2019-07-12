@@ -26,6 +26,7 @@ local file_list   = hal.hdd.file_list
 local file_delete = hal.hdd.file_delete
 local dir_create  = hal.hdd.dir_create
 local file_size   = hal.hdd.file_size
+local file_type   = hal.hdd.file_type
 
 local devid = 0
 
@@ -62,6 +63,7 @@ local function enable_internal()
                 fileDelete = function(self, path) return file_delete(id, path) end,
                 dirCreate  = function(self, path) return dir_create(id,  path) end,
                 fileSize   = function(self, path) return file_size(id,   path) end,
+                fileType   = function(self, path) return file_type(id,   path) end,
             }
         end, 'storage')
         sys.drvmgr_claim('hdd' .. devid, driver)
