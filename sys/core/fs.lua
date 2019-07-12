@@ -20,7 +20,7 @@ local function getMount(path)
 end
 
 function sys.fs_open(path, mode)
-    if not path then error('sys.fs_open: Missing path') end
+    aex_int.assertType(path, 'string')
     if not mode then mode = 'r' end
 
     if aex_int.dev[path] then
@@ -76,7 +76,7 @@ function sys.fs_open(path, mode)
     return ret
 end
 function sys.fs_exists(path)
-    if not path then error('sys.fs_exists: Missing path') end
+    aex_int.assertType(path, 'string')
 
     if aex_int.dev[path] then    return true end
     if aex_int.mounts[path .. '/'] then return true end
@@ -88,7 +88,7 @@ function sys.fs_exists(path)
     return mount:fileExists(path_r)
 end
 function sys.fs_list(path)
-    if not path then error('sys.fs_list: Missing path') end
+    aex_int.assertType(path, 'string')
 
     local mount, path_r = getMount(path)
     if not mount then return nil end
@@ -120,7 +120,7 @@ function sys.fs_list(path)
     return l
 end
 function sys.fs_delete(path)
-    if not path then error('sys.fs_delete: Missing path') end
+    aex_int.assertType(path, 'string')
 
     local mount, path_r = getMount(path)
     if not mount then return nil end
@@ -128,7 +128,7 @@ function sys.fs_delete(path)
     return mount:fileDelete(path_r)
 end
 function sys.fs_mkdir(path)
-    if not path then error('sys.fs_mkdir: Missing path') end
+    aex_int.assertType(path, 'string')
 
     local mount, path_r = getMount(path)
     if not mount then return nil end
@@ -136,12 +136,20 @@ function sys.fs_mkdir(path)
     return mount:dirCreate(path_r)
 end
 function sys.fs_size(path)
-    if not path then error('sys.fs_size: Missing path') end
+    aex_int.assertType(path, 'string')
 
     local mount, path_r = getMount(path)
     if not mount then return nil end
 
     return mount:fileSize(path_r)
+end
+function sys.fs_type(path)
+    aex_int.assertType(path, 'string')
+
+    local mount, path_r = getMount(path)
+    if not mount then return nil end
+
+    return mount:fileType(path_r)
 end
 function sys.fs_mount(dev_path, path)
     if not dev_path or not path then error('sys.fs_mount: Missing arguments') end
