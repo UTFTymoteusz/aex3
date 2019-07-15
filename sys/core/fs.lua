@@ -163,6 +163,10 @@ end
 function sys.fs_type(path)
     aex_int.assertType(path, 'string')
 
+    if aex_int.dev[path] then return 'dev' end
+    if aex_int.mounts[path .. '/'] then return 'mnt' end
+    if aex_int.mounts[path] then return 'mnt' end
+
     local mount, path_r = getMount(path)
     if not mount then return nil end
 
