@@ -45,7 +45,8 @@ function sys.fs_open(path, mode)
         else
             -- do method replacement
         end
-
+        
+        dev_io.open     = nil
         dev_io.path     = path
         dev_io.isDevice = true
         dev_io.type     = aex_int.dev_marks[path]
