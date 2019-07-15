@@ -133,6 +133,8 @@ function corefuncs.cd(args)
     if dir[#dir] ~= '/' then dir = dir .. '/' end
     if not fs.exists(dir) then
         stderr:writeln('sh: cd: ' .. origdir .. ': No such file or directory')
+    elseif fs.type(dir) ~= 'dir' and fs.type(dir) ~= 'mnt' then
+        stderr:writeln('sh: cd: ' .. origdir .. ': Not a directory')
     else current_dir = dir end
 end
 function corefuncs.whoami(args)
