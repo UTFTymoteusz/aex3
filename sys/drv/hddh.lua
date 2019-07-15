@@ -37,35 +37,33 @@ local function enable_internal()
         if id == boot.drive_id then
             boot.drive_name = '/dev/hdd' .. devid
         end
-        sys.add_device('hdd' .. devid, function()
-            return {
-                fd_open = function(self, path, mode) 
-                    return fd_open(id, path, mode)
-                end,
-                fd_read = function(self, fd, len)
-                    return fd_read(id, fd, len)
-                end,
-                fd_write = function(self, fd, str)
-                    return fd_write(id, fd, str)
-                end,
-                fd_seek = function(self, fd, op, offset)
-                    return fd_seek(id, fd, op, offset)
-                end,
-                fd_flush = function(self, fd)
-                    return fd_flush(id, fd)
-                end,
-                fd_close = function(self, fd)
-                    return fd_close(id, fd)
-                end,
+        sys.add_device('hdd' .. devid, {
+            fd_open = function(self, path, mode) 
+                return fd_open(id, path, mode)
+            end,
+            fd_read = function(self, fd, len)
+                return fd_read(id, fd, len)
+            end,
+            fd_write = function(self, fd, str)
+                return fd_write(id, fd, str)
+            end,
+            fd_seek = function(self, fd, op, offset)
+                return fd_seek(id, fd, op, offset)
+            end,
+            fd_flush = function(self, fd)
+                return fd_flush(id, fd)
+            end,
+            fd_close = function(self, fd)
+                return fd_close(id, fd)
+            end,
 
-                fileExists = function(self, path) return file_exists(id, path) end,
-                fileList   = function(self, path) return file_list(id,   path) end,
-                fileDelete = function(self, path) return file_delete(id, path) end,
-                dirCreate  = function(self, path) return dir_create(id,  path) end,
-                fileSize   = function(self, path) return file_size(id,   path) end,
-                fileType   = function(self, path) return file_type(id,   path) end,
-            }
-        end, 'storage')
+            fileExists = function(self, path) return file_exists(id, path) end,
+            fileList   = function(self, path) return file_list(id,   path) end,
+            fileDelete = function(self, path) return file_delete(id, path) end,
+            dirCreate  = function(self, path) return dir_create(id,  path) end,
+            fileSize   = function(self, path) return file_size(id,   path) end,
+            fileType   = function(self, path) return file_type(id,   path) end,
+        }, 'storage')
         sys.drvmgr_claim('hdd' .. devid, driver)
 
         devid = devid + 1

@@ -83,14 +83,14 @@ sys = {} -- syscalls, hooray
 function sys.get_internal_table()
     return aex_int
 end
-function sys.add_device(name, open_cb, type)
+function sys.add_device(name, method_table, type)
     aex_int.assertType(name, 'string')
-    aex_int.assertType(open_cb, 'function')
+    aex_int.assertType(method_table, 'table')
     aex_int.assertType(type, 'string', true)
 
     if string.sub(name, 1, 5) ~= '/dev/' then name = '/dev/' .. name end
 
-    aex_int.dev[name] = open_cb
+    aex_int.dev[name] = method_table
     type = type or 'generic'
     type = string.lower(type)
     aex_int.dev_marks[name] = type
@@ -204,35 +204,33 @@ loadDriverOrHalt('/sys/drv/ttySh.drv')
 local tty_input_buffer = ''
 do
     local x, y = 0, 0
-    sys.add_device('tty0', function()
-        return {
-            read = function(self, len)
-                if not len then
-                    while #tty_input_buffer == 0 do waitOne() end
+    sys.add_device('tty0', {
+        read = function(self, len)
+            if not len then
+                while #tty_input_buffer == 0 do waitOne() end
 
-                    local a = tty_input_buffer
-                    tty_input_buffer = ''
-                    return a
-                else
-                    while #tty_input_buffer < len do waitOne() end
+                local a = tty_input_buffer
+                tty_input_buffer = ''
+                return a
+            else
+                while #tty_input_buffer < len do waitOne() end
 
-                    local a = string.sub(tty_input_buffer, 1, len)
-                    tty_input_buffer = string.sub(tty_input_buffer, len + 1)
-                    return a
-                end
-            end,
-            write = function(self, data)
-                tty_i.write(data)
-            end,
-            setSize = function(self, nx, ny)
-                x, y = nx, ny
-                return true
-            end,
-            getSize = function(self)
-                return x, y
-            end,
-        }
-    end, 'tty')
+                local a = string.sub(tty_input_buffer, 1, len)
+                tty_input_buffer = string.sub(tty_input_buffer, len + 1)
+                return a
+            end
+        end,
+        write = function(self, data)
+            tty_i.write(data)
+        end,
+        setSize = function(self, nx, ny)
+            x, y = nx, ny
+            return true
+        end,
+        getSize = function(self)
+            return x, y
+        end,
+    }, 'tty')
 end
 tty_i.writeln(log.ok() .. 'Hardware enumeration complete')
 tty_i.writeln('')

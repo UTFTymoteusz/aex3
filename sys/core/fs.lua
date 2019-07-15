@@ -24,11 +24,28 @@ function sys.fs_open(path, mode)
     if not mode then mode = 'r' end
 
     if aex_int.dev[path] then
-        local dev_io = aex_int.dev[path]()
+        local dev_base = aex_int.dev[path]
+        local dev_io   = {}
 
+        if not dev_io.open then
+            function dev_io.open(self) return true end
+        end
         if not dev_io.close then
             function dev_io.close(self) end
         end
+
+        for k, v in pairs(dev_base) do
+            dev_io[k] = v
+        end
+
+        local ret = dev_io:open()
+
+        if not ret then
+            return nil, aex_int.result.resource_or_device_busy_error
+        else
+            -- do method replacement
+        end
+
         dev_io.path     = path
         dev_io.isDevice = true
         dev_io.type     = aex_int.dev_marks[path]

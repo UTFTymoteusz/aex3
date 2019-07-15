@@ -116,18 +116,16 @@ function unload()
 
 end
 function enable()
-    sys.add_device('ram', function()
-        local files = {}
-        return {
-            fileRead   = function(self, path)       return write(path) end,
-            fileExists = function(self, path)       return exists(path) end,
-            fileWrite  = function(self, path, data) return write(path, data) end,
-            fileList   = function(self, path)       return list(path) end,
-            fileDelete = function(self, path)       return delete(path) end,
-            dirCreate  = function(self, path)       return mkdir(path) end,
-        }
-    end, 'storage')
+    sys.add_device('ram', {
+        fileRead   = function(self, path)       return write(path) end,
+        fileExists = function(self, path)       return exists(path) end,
+        fileWrite  = function(self, path, data) return write(path, data) end,
+        fileList   = function(self, path)       return list(path) end,
+        fileDelete = function(self, path)       return delete(path) end,
+        dirCreate  = function(self, path)       return mkdir(path) end,
+    }, 'storage')
     sys.drvmgr_claim('ram')
+    
     return true
 end
 function disable()

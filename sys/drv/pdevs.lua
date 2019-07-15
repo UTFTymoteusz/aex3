@@ -34,73 +34,65 @@ function enable()
         end
     end)
 
-    sys.add_device('null', function()
-        return {
-            write = function(self, data) end,
-            read = function(self, len)
-                return ''
-            end,
-        }
-    end)
+    sys.add_device('null', {
+        write = function(self, data) end,
+        read = function(self, len)
+            return ''
+        end,
+    })
     sys.drvmgr_claim('null')
 
-    sys.add_device('zero', function()
-        return {
-            write = function(self, data) end,
-            read = function(self, len)
-                if len then return string.rep('\0', len)
-                else return '\0' end
-            end,
-        }
-    end)
+    sys.add_device('zero', {
+        write = function(self, data) end,
+        read = function(self, len)
+            if len then return string.rep('\0', len)
+            else return '\0' end
+        end,
+    })
     sys.drvmgr_claim('zero')
 
-    sys.add_device('random', function()
-        return {
-            write = function(self, data) end,
-            read = function(self, len)
-                if len then
-                    local ret = string.sub(random_buffer, 1, len)
+    sys.add_device('random', {
+        write = function(self, data) end,
+        read = function(self, len)
+            if len then
+                local ret = string.sub(random_buffer, 1, len)
+                random_buffer = string.sub(random_buffer, len + 1)
+
+                len = len - #ret
+                local next
+                while len > 0 do
+                    next = string.sub(random_buffer, 1, len)
                     random_buffer = string.sub(random_buffer, len + 1)
 
-                    len = len - #ret
-                    local next
-                    while len > 0 do
-                        next = string.sub(random_buffer, 1, len)
-                        random_buffer = string.sub(random_buffer, len + 1)
-
-                        ret = ret .. next
-                        len = len - #next
-                        waitOne()
-                    end
-                    return ret
-                else
-                    while #random_buffer == 0 do waitOne() end
-
-                    local ret = random_buffer
-                    random_buffer = ''
-
-                    return ret
+                    ret = ret .. next
+                    len = len - #next
+                    waitOne()
                 end
-            end,
-        }
-    end)
+                return ret
+            else
+                while #random_buffer == 0 do waitOne() end
+
+                local ret = random_buffer
+                random_buffer = ''
+
+                return ret
+            end
+        end,
+    })
     sys.drvmgr_claim('random')
 
-    sys.add_device('urandom', function()
-        local buff
-        return {
-            write = function(self, data) end,
-            read = function(self, len)
-                len = len and len or 4
-                buff = ''
-                for i = 1, len do
-                    buff = buff .. string.char(math.random(0, 255))
-                end
-                return buff
-            end,
-        }
-    end)
+    local buff
+    sys.add_device('urandom', {
+        write = function(self, data) end,
+        read = function(self, len)
+            len = len and len or 4
+            buff = ''
+            for i = 1, len do
+                buff = buff .. string.char(math.random(0, 255))
+            end
+            return buff
+        end,
+    })
     sys.drvmgr_claim('urandom')
 
     return true
