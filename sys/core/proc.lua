@@ -218,29 +218,38 @@ function sys.thread_create(func)
     }
 end
 
+local c_status = coroutine.status
+local c_resume = coroutine.resume
+
+local pairs = pairs
+
 function aex_int.proc.begin_task_loop()
     local processes = aex_int.processes
+    local proc_th
     while true do
         current_pid = 0
         for k, v in pairs(aex_int.threads_k) do
 
-            if coroutine.status(v) == 'dead' then
+            if c_status(v) == 'dead' then
                 aex_int.threads_k[k] = nil
-            else coroutine.resume(v) end
+            else c_resume(v) end
         end
 
         if #processes == 0 then return end
 
         for pid, process in pairs(processes) do
             current_pid = pid
-            if #process.threads == 0 then
+
+            proc_th = process.threads
+
+            if #proc_th == 0 then
                 processes[pid] = nil
             else
-                for k, thread in pairs(process.threads) do
+                for k, thread in pairs(proc_th) do
 
-                    if coroutine.status(thread) == 'dead' then
-                        process.threads[k] = nil
-                    else coroutine.resume(thread) end
+                    if c_status(thread) == 'dead' then
+                        proc_th[k] = nil
+                    else c_resume(thread) end
                 end
             end
         end

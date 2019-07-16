@@ -28,8 +28,9 @@ local function halt()
     until false
 end
 waitOne = coroutine.yield
+local c_wait = coroutine.wait
 function sleep(ms)
-    coroutine.wait(ms * 0.001)
+    c_wait(ms * 0.001)
 end
 
 local function seq(cat, ...)
@@ -203,6 +204,8 @@ loadDriverOrHalt('/sys/drv/ttySh.drv')
 
 local tty_input_buffer = ''
 do
+    local write = tty_i.write
+
     local x, y = 0, 0
     sys.add_device('tty0', {
         read = function(self, len)
@@ -221,7 +224,7 @@ do
             end
         end,
         write = function(self, data)
-            tty_i.write(data)
+            write(data)
         end,
         setSize = function(self, nx, ny)
             x, y = nx, ny
