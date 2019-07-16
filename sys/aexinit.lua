@@ -24,10 +24,25 @@ for k, v in pairs(fs.readln('/cfg/init/tty')) do
     if not fs.exists(v) then
         io.writeln('Line ' .. k .. ': ' .. v .. ' not found')
         goto xcontinue
+    end 
+    local fd = fs.open(v, 'rw')
+
+    if fd.type ~= 'tty' and fd.type ~= 'ttys' then
+        io.writeln('Line ' .. k .. ': ' .. v .. ' is not an tty')
+    end
+    ::xcontinue::
+end
+for k, v in pairs(fs.readln('/cfg/init/tty')) do
+    v = string.trim(v)
+    if   #v == 0   then goto xcontinue end
+    if v[1] == '#' then goto xcontinue end
+
+    if not fs.exists(v) then
+        goto xcontinue
     end
     local fd = fs.open(v, 'rw')
-    if fd.type ~= 'tty' then
-        io.writeln('Line ' .. k .. ': ' .. v .. ' is not an tty')
+
+    if fd.type ~= 'tty' and fd.type ~= 'ttys' then
         goto xcontinue
     end
     local np = proc.create('/bin/login.lua')
@@ -35,6 +50,7 @@ for k, v in pairs(fs.readln('/cfg/init/tty')) do
     np.stdout:bind(fd)
     np.stderr:bind(fd)
 
+    sleep(500)
     np:start()
 
     srv[v] = np
