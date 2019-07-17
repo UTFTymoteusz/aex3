@@ -15,8 +15,15 @@ local buffer = {''}
 local file = args[1]
 
 local status_last_len = 0
+local warning = false
 
-proc.registerSignalHandler('stop', function() return true end)
+proc.registerSignalHandler('stop', function() 
+    if warning then return false
+    else
+        warning = true
+        return true
+    end
+end)
 
 if not file then
     stderr:writeln('edit: No filename specified')
@@ -132,6 +139,8 @@ while true do
 
     k = io.read()
     b = s_byte(k)
+
+    warning = false
 
     if b >= 32 and b <= 126 then
         cx = m_clamp(cx, 1, #buffer[cy] + 1)
