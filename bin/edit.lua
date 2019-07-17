@@ -46,7 +46,7 @@ local function drawPosition(add)
     end
 
     local str = string.format(add .. '^S Save ^C Exit  %i, %i  ', cx, cy)
-    io.write(ansi.cursorPos(sx - #str + 1, 51), str)
+    io.write(ansi.cursorPos(sx - #str + 1, sy), str)
 end
 local function cursor()
     drawPosition()
@@ -54,7 +54,7 @@ local function cursor()
 end
 local function drawStatusBar()
     local str = '  Editing: ' .. file
-    io.write(ansi.cursorPos(1, 51), str .. string.rep(' ', sx - #str))
+    io.write(ansi.cursorPos(1, sy), str .. string.rep(' ', sx - #str))
     drawPosition()
 end
 local function drawLine(y, clear)
