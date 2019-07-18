@@ -176,15 +176,18 @@ tty_i.writeln('|#   # |#     /#\\#        |#')
 tty_i.writeln('|#   # |#### /#  \\#   |#####')
 tty_i.writeln(log.pad(4) .. 'Booting AEX/3')
 
-local function loadDriver(path, halt)
+local function loadDriver(path, _halt)
+
+    tty_i.writeln(' Driver: ' .. path)
+
     local r, msg = sys.drvmgr_load(path)
     if not r then 
         tty_i.writeln(msg) 
         sleep(2000)
-        if halt then halt()
+
+        if _halt then halt()
         else return end
     end
-
     tty_i.writeln(log.load() .. 'Loaded "' .. sys.drvmgr_info(r).full_name .. '" driver')
 end
 
