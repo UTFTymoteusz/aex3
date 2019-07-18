@@ -24,8 +24,8 @@
             <li>On failure: [nil] nil, [number] Failure Code</li>
         </ul>
 
-        <h2>sys.add_device([string] name, [table] methods_table [, [string] type ])</h2>
-        <p>Adds a device to the device list. The device will appear inside of <i>/dev/</i>. If the name starts with /dev/, it will ignore the first 5 chars. methods_table argument is a table of method functions. Required methods depend on the device type you want to register. First argument of every function is self (so you have to do function(self, arg1, arg2) instead of function(arg1, arg2) ). If type is not specified, type will be set to 'generic'.</p>
+        <h2>sys.add_device([string] name, [table] methods_table [, [string] type, [string] subtype ])</h2>
+        <p>Adds a device to the device list. The device will appear inside of <i>/dev/</i>. If the name starts with /dev/, it will ignore the first 5 chars. methods_table argument is a table of method functions. Required methods depend on the device type you want to register. First argument of every function is self (so you have to do function(self, arg1, arg2) instead of function(arg1, arg2) ). If type is not specified, type will be set to 'generic'. If subtype is not specified, it will be nil.</p>
 
         <h2>sys.get_running_pid()</h2>
         <p>Gets the currently running process's id.</p>

@@ -22,6 +22,7 @@ local function enable_internal()
 
     for _, id in pairs(hal.serial.get_all_ids()) do
 
+        local x, y = 80, 25
         sys.add_device('ttyS' .. devid, {
             open = function(self)
                 tty_clear(id)
@@ -46,7 +47,14 @@ local function enable_internal()
                     return b
                 end
             end,
-        }, 'ttyS')
+            setSize = function(self, nx, ny)
+                x, y = nx, ny
+                return true
+            end,
+            getSize = function(self)
+                return x, y
+            end,
+        }, 'tty', 'serial')
         sys.drvmgr_claim('ttyS' .. devid, driver)
 
         devid = devid + 1

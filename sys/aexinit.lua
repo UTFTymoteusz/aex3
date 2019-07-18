@@ -27,7 +27,7 @@ for k, v in pairs(fs.readln('/cfg/init/tty')) do
     end 
     local fd = fs.open(v, 'rw')
 
-    if fd.type ~= 'tty' and fd.type ~= 'ttys' then
+    if fd.type ~= 'tty' then
         io.writeln('Line ' .. k .. ': ' .. v .. ' is not an tty')
     end
     ::xcontinue::
@@ -42,7 +42,7 @@ for k, v in pairs(fs.readln('/cfg/init/tty')) do
     end
     local fd = fs.open(v, 'rw')
 
-    if fd.type ~= 'tty' and fd.type ~= 'ttys' then
+    if fd.type ~= 'tty' then
         goto xcontinue
     end
     local np = proc.create('/bin/login.lua')

@@ -6,8 +6,9 @@ local aex_int = {
         drive_name = '',
         tty      = nil,
     },
-    dev       = {},
-    dev_marks = {},
+    dev        = {},
+    dev_marks  = {},
+    dev_smarks = {},
 
     drivers   = {},
     driver_id_counter = 0,
@@ -84,10 +85,11 @@ sys = {} -- syscalls, hooray
 function sys.get_internal_table()
     return aex_int
 end
-function sys.add_device(name, method_table, type)
+function sys.add_device(name, method_table, type, subtype)
     aex_int.assertType(name, 'string')
     aex_int.assertType(method_table, 'table')
     aex_int.assertType(type, 'string', true)
+    aex_int.assertType(subtype, 'string', true)
 
     if string.sub(name, 1, 5) ~= '/dev/' then name = '/dev/' .. name end
 
@@ -95,6 +97,7 @@ function sys.add_device(name, method_table, type)
     type = type or 'generic'
     type = string.lower(type)
     aex_int.dev_marks[name] = type
+    aex_int.dev_smarks[name] = subtype
 
     aex_int.printk(log.device() .. 'Added ' .. name)
     return true
@@ -143,6 +146,7 @@ local function loadModuleSafe(path)
     local code = readFile(path)
     tty_i.writeln(log.pad(1) .. path)
 
+    waitOne()
     return loadSafe(code)
 end
 
@@ -172,9 +176,14 @@ tty_i.writeln('|#   # |#     /#\\#        |#')
 tty_i.writeln('|#   # |#### /#  \\#   |#####')
 tty_i.writeln(log.pad(4) .. 'Booting AEX/3')
 
-local function loadDriverOrHalt(path)
+local function loadDriver(path, halt)
     local r, msg = sys.drvmgr_load(path)
-    if not r then tty_i.writeln(msg) halt() end
+    if not r then 
+        tty_i.writeln(msg) 
+        sleep(2000)
+        if halt then halt()
+        else return end
+    end
 
     tty_i.writeln(log.load() .. 'Loaded "' .. sys.drvmgr_info(r).full_name .. '" driver')
 end
@@ -198,9 +207,9 @@ if envinit_e then
 else tty_i.writeln(log.none() .. 'No early init found for ' .. boot_kind) end
 
 tty_i.writeln('Enumerating hardware and loading drivers')
-loadDriverOrHalt('/sys/drv/ram.drv')
-loadDriverOrHalt('/sys/drv/hddh.drv')
-loadDriverOrHalt('/sys/drv/ttySh.drv')
+loadDriver('/sys/drv/ram.drv', true)
+loadDriver('/sys/drv/hddh.drv', true)
+loadDriver('/sys/drv/ttySh.drv', true)
 
 local tty_input_buffer = ''
 do
@@ -236,6 +245,21 @@ do
     }, 'tty')
 end
 tty_i.writeln(log.ok() .. 'Hardware enumeration complete')
+
+local add_drivers = readFile('/cfg/sys/drv')
+if add_drivers then
+    tty_i.writeln('Loading additional drivers')
+
+    for k, v in pairs(string.split(add_drivers, '\n')) do
+        v = string.trim(v)
+        if   #v == 0   then goto xcontinue end
+        if v[1] == '#' then goto xcontinue end
+    
+        loadDriver(v)
+        ::xcontinue::
+    end
+    tty_i.writeln(log.ok() .. 'Additional drivers loaded')
+end
 tty_i.writeln('')
 
 tty_i.writeln('Loading core modules')
@@ -263,7 +287,7 @@ if envinit_p then
 else tty_i.writeln(log.none() .. 'No post init found for ' .. boot_kind) end
 
 tty_i.writeln('Loading extra drivers')
-loadDriverOrHalt('/sys/drv/pdevs.drv')
+loadDriver('/sys/drv/pdevs.drv', true)
 
 sys.thread_create(function()
     while true do
@@ -292,12 +316,12 @@ if not aex_int.need_verify then
     tty_i.writeln('Starting aexinit.lua')
     initp_ctrl, err = sys.process_create('/sys/aexinit.lua')
 
-    if not initp_ctrl then tty_i.writeln(log.fail() .. 'aexinit: ' .. err) end
+    if not initp_ctrl then tty_i.writeln(log.fail() .. 'aexinit: ' .. err) halt() end
 else
     tty_i.writeln('Starting aexvrfy.lua')
     initp_ctrl, err = sys.process_create('/sys/aexvrfy.lua')
 
-    if not initp_ctrl then tty_i.writeln(log.fail() .. 'aexvrfy: ' .. err) end
+    if not initp_ctrl then tty_i.writeln(log.fail() .. 'aexvrfy: ' .. err) halt() end
 end
 initp_ctrl.stdin:bind(tty0)
 initp_ctrl.stdout:bind(tty0)

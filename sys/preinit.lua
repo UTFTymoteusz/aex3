@@ -45,7 +45,7 @@ if not aex_int.hostname then
     aex_int.need_verify = true
 end
 
-local cool_dirs = {'/dev/', '/home/', '/mnt/', '/var/'}
+local cool_dirs = {'/cfg/', '/cfg/sys/', '/dev/', '/home/', '/mnt/', '/var/'}
 for _, dir in pairs(cool_dirs) do
     if not sys.fs_exists(dir) then sys.fs_mkdir(dir) end
 end
@@ -53,6 +53,12 @@ end
 if not sys.fs_exists('/cfg/motd') then
     local f = sys.fs_open('/cfg/motd', 'w')
     f:write("Welcome to AEX/3\r\n#####################################\r\n\r\nIf you'd like to change the welcome message, edit /cfg/motd")
+    f:flush()
+    f:close()
+end
+if not sys.fs_exists('/cfg/sys/drv') then
+    local f = sys.fs_open('/cfg/sys/drv', 'w')
+    f:write("# /cfg/sys/drv: Additional drivers to load and enable on bootup\n\n")
     f:flush()
     f:close()
 end
