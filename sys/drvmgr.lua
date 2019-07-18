@@ -96,9 +96,9 @@ function sys.drvmgr_load(path)
     do
         local s, r
         s, r = pcall(drv.load)
-        if not s then return nil, 'Driver error: ' .. r end
+        if not s then aex_int.drivers[nid] = nil return nil, 'Driver error: ' .. r end
         s, r = pcall(drv.enable)
-        if not s then return nil, 'Driver error: ' .. r end
+        if not s then aex_int.drivers[nid] = nil return nil, 'Driver error: ' .. r end
     end
     return nid
 end
