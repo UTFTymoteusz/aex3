@@ -52,7 +52,7 @@ end
 
 if not sys.fs_exists('/cfg/motd') then
     local f = sys.fs_open('/cfg/motd', 'w')
-    f:write("Welcome to AEX/3\r\n#####################################\r\n\r\nIf you'd like to change the welcome message, edit /cfg/motd")
+    f:write("Welcome to AEX/3\n#####################################\n\nIf you'd like to change the welcome message, edit /cfg/motd")
     f:flush()
     f:close()
 end

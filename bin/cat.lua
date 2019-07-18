@@ -19,9 +19,6 @@ else
         a = s:read()
         if #a == 0 then break end
 
-        if not s.isDevice then
-            a = string.replace(a, '\n', '\r\n')
-        end
         stdout:write(a)
         waitOne()
     end

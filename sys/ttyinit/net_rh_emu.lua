@@ -5,7 +5,9 @@ local ysize = rh.ScreenY
 local gpu = rh.GPU
 
 local function putchar(byte)
-    if byte == 10 then     y = y + 1
+    if byte == 10 then     
+        x = 0
+        y = y + 1
     elseif byte == 13 then x = 0
     elseif byte == 8 then
         if x > 0 then

@@ -8,6 +8,7 @@ if chipset.Components.GPU then
     local x, y = 0, 0
     local function putchar(byte)
         if byte == 10 then
+            x = 0
             y = y + 1
         elseif byte == 13 then
             x = 0
