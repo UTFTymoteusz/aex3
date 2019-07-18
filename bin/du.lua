@@ -12,7 +12,7 @@ local function printSize(path)
     for k, v in pairs(list) do
         if v.type == 'file' then
             size = size + fs.size(path .. v.name)
-        elseif v.type == 'dir' then
+        elseif v.type == 'dir' or v.type == 'mnt' then
             size = size + printSize(path .. v.name)
         end
     end
