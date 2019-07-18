@@ -64,7 +64,6 @@ local function enable_internal()
             fileSize   = function(self, path) return file_size(id,   path) end,
             fileType   = function(self, path) return file_type(id,   path) end,
         }, 'storage', 'hdd')
-        sys.drvmgr_claim('hdd' .. devid, driver)
 
         devid = devid + 1
         ::xcontinue::

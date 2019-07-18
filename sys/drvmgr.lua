@@ -29,12 +29,17 @@ function sys.drvmgr_load(path)
     local env = table.copy(getfenv())
     local owned = {}
 
-    env.sys.drvmgr_claim = function(name)
+    function env.sys.add_device(name, method_table, type, subtype)
         aex_int.assertType(name, 'string')
-    
-        if string.sub(name, 1, 5) ~= '/dev/' then name = '/dev/' .. name end
-        table.add(owned, {name})
+        aex_int.assertType(method_table, 'table')
+        aex_int.assertType(type, 'string', true)
+        aex_int.assertType(subtype, 'string', true)
 
+        if string.sub(name, 1, 5) ~= '/dev/' then name = '/dev/' .. name end
+
+        sys.add_device(name, method_table, type, subtype)
+
+        table.add(owned, {name})
         return true
     end
     setfenv(code, env)
@@ -42,9 +47,9 @@ function sys.drvmgr_load(path)
     local s, r = pcall(code)
 
     if not s then return nil, tostring(drv) end
-    if not env.info or type(env.info) ~= 'table' then 
+    if not env.info or type(env.info) ~= 'table' then
         return nil, 'Driver did not set a global info table' end
-    
+
     local drv = {
         full_name = env.info.full_name,
         name      = env.info.name,

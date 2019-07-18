@@ -55,7 +55,6 @@ local function enable_internal()
                 return x, y
             end,
         }, 'tty', 'serial')
-        sys.drvmgr_claim('ttyS' .. devid, driver)
 
         devid = devid + 1
         ::xcontinue::

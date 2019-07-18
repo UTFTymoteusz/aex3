@@ -64,13 +64,6 @@
             <li>On failure: [nil] nil</li>
         </ul>
 
-        <h2>sys.drvmgr_claim([string] dev_name)</h2>
-        <p>Placeholder description</p>
-        <h4>Returns:</h4>
-        <ul>
-            <li>Bool that is true if the operation succeeded</li>
-        </ul>
-
         <h2>sys.fs_open([string] path, [string] mode)</h2>
         <p>Opens a file from the virtual filesystem. Normally, this returns a <a href="https://add.the.goddamned.reference.jesus">file descriptor object</a>, but in the case of devices the object can differ in specific ways (for example, HDD's have no :read() and :write(), but instead they have :fileRead() and :fileWrite()). To differentiate between various types of devices you should use the 'type' field. The <i>mode</i> argument has only any effect when opening an actual file. If the <i>mode</i> argument is not specified, it will default to <i>r</i>.</p>
         <h4>Modes</h4>

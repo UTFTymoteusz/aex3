@@ -40,7 +40,6 @@ function enable()
             return ''
         end,
     })
-    sys.drvmgr_claim('null')
 
     sys.add_device('zero', {
         write = function(self, data) end,
@@ -49,7 +48,6 @@ function enable()
             else return '\0' end
         end,
     })
-    sys.drvmgr_claim('zero')
 
     sys.add_device('random', {
         write = function(self, data) end,
@@ -79,7 +77,6 @@ function enable()
             end
         end,
     })
-    sys.drvmgr_claim('random')
 
     local buff
     sys.add_device('urandom', {
@@ -93,7 +90,6 @@ function enable()
             return buff
         end,
     })
-    sys.drvmgr_claim('urandom')
 
     return true
 end
