@@ -66,7 +66,7 @@ local function enable_internal()
         }, 'storage', 'hdd')
 
         devid = devid + 1
-        ::xcontinue::
+        ::xcont::
     end
 end
 

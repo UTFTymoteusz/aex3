@@ -89,7 +89,7 @@ sys.thread_create(function()
             resolveKeys()
             table.empty(input_cur_keys)
 
-            goto xcontinue
+            goto xcont
         end
         if input_last_key then
             systime = timer.systime()
@@ -99,11 +99,11 @@ sys.thread_create(function()
                 input_keys_raw = {input_last_key}
                 input_keys     = {input_last_key}
 
-                goto xcontinue
+                goto xcont
             end
         end
         input_keys = nil
         input_keys_raw = nil
-        ::xcontinue::
+        ::xcont::
     end
 end)

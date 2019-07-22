@@ -103,18 +103,18 @@ function io.readln(echo)
     while true do
         c = io.read(1)
         b = string.byte(c)
-        if ((b < 32) and (b ~= 13 and b ~= 8)) or b > 127 then goto xcontinue end
+        if ((b < 32) and (b ~= 13 and b ~= 8)) or b > 127 then goto xcont end
         if c == '\b' then
             if echo and #buffer > 0 then io.write(c) end
 
             buffer = string.sub(buffer, 1, #buffer - 1)
-            goto xcontinue
+            goto xcont
         end
         if echo then io.write(c) end
         if c == '\r' or c == '\n' then break end
 
         buffer = buffer .. c
-        ::xcontinue::
+        ::xcont::
     end
     return buffer
 end

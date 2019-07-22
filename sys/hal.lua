@@ -22,13 +22,13 @@ if boot_kind == 'net_rh_emu' then
 
             for k, v in pairs(string.split(list, '\n')) do
                 v = string.split(v, '\r')
-                if not v[1] or not v[2] then goto xcontinue end
+                if not v[1] or not v[2] then goto xcont end
 
                 ret[#ret + 1] = {
                     name = v[1],
                     type = v[2],
                 }
-                ::xcontinue::
+                ::xcont::
             end
             return ret
         end,

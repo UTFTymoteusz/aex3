@@ -59,7 +59,7 @@ for k, src in pairs(args) do
 
     if not fs.exists(src) then
         stderr:writeln('cp: ' .. src .. ': No such file or directory')
-        goto xcontinue
+        goto xcont
     end
     type = fs.type(src)
 
@@ -73,11 +73,11 @@ for k, src in pairs(args) do
 
             if dst_type ~= 'dir' then
                 stderr:writeln('cp: ' .. src .. ': Attempt to copy a directory into a file')
-                goto xcontinue
+                goto xcont
             end
             _ = (#args > 2 and copy_recursive(src, dst .. fs.getFilename(src)) or copy_recursive(src, dst))
         else
             stderr:writeln('cp: ' .. src .. ': Invalid file type') end
     end
-    ::xcontinue::
+    ::xcont::
 end

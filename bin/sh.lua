@@ -87,12 +87,12 @@ local function exec(entry)
     if not s then return s, r end
 
     for k, v in pairs(exec) do
-        if fs.getExtension(v.bin) ~= 'lua' then io.writeln('sh: ' .. v.bin .. ': Not an executable') goto xcontinue end
+        if fs.getExtension(v.bin) ~= 'lua' then io.writeln('sh: ' .. v.bin .. ': Not an executable') goto xcont end
 
         local pp, err = proc.create(v.bin, v.args, current_dir)
 
         if type(err) == 'number' then err = res.translate(err) end
-        if not pp then io.writeln('sh: ' .. v.bin .. ': ' .. (err or 'Unknown error')) goto xcontinue end
+        if not pp then io.writeln('sh: ' .. v.bin .. ': ' .. (err or 'Unknown error')) goto xcont end
 
         local input_th = thread.create(function()
             local c, b
@@ -119,7 +119,7 @@ local function exec(entry)
 
         input_th:abort()
 
-        ::xcontinue::
+        ::xcont::
     end
     return true
 end
@@ -153,7 +153,7 @@ while true do
     io.write('\r', ansi.colorFgRGB(0,255,0), sh.getUser() .. '@' .. os.getHostname(), ansi.resetg(), ':', ansi.colorFgRGB(0,0,255), current_dir, ansi.resetg(), ' ')
 
     local str = io.readln(true)
-    if #str == 0 then goto xcontinue end
+    if #str == 0 then goto xcont end
 
     do
         local c = string.trim(str)
@@ -167,7 +167,7 @@ while true do
 
             if corefuncs[cmd] then
                 corefuncs[cmd](args)
-                goto xcontinue
+                goto xcont
             end
         end
     end
@@ -178,5 +178,5 @@ while true do
     if not s then io.writeln(r) end
 
     --io.writeln() -- make this smarter later
-    ::xcontinue::
+    ::xcont::
 end

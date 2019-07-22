@@ -57,7 +57,7 @@ local function enable_internal()
         }, 'tty', 'serial')
 
         devid = devid + 1
-        ::xcontinue::
+        ::xcont::
     end
 end
 

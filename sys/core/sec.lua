@@ -107,7 +107,7 @@ local function sec_init()
     local s = string.split(fd:read('*a'), '\n')
     for _, v in pairs(s) do
         v = string.trim(v)
-        if #v == 0 then goto xcontinue end
+        if #v == 0 then goto xcont end
 
         v = string.split(v, ';')
 
@@ -115,7 +115,7 @@ local function sec_init()
         if pass == 'NP' then pass = nil end
 
         sec.accounts[ v[1] ] = {pass = pass}
-        ::xcontinue::
+        ::xcont::
     end
     fd:close()
 end

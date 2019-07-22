@@ -15,7 +15,7 @@ function require(lib)
 
     for _, p in pairs(lib_paths) do
         fd = sys.fs_open(p, 'r')
-        if not fd then goto xcontinue end
+        if not fd then goto xcont end
 
         local code = fd:read('*a')
         local rr
@@ -32,7 +32,7 @@ function require(lib)
             end
         else error(code) end
         do return code() end
-        ::xcontinue::
+        ::xcont::
     end
     return nil
 end

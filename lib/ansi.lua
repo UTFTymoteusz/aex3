@@ -55,7 +55,7 @@ function ansi.getParser()
                             buffer = ''
                         end
                         state = 1
-                        goto xcontinue
+                        goto xcont
                     end
                     buffer = buffer .. c
                 elseif state == 1 then
@@ -74,10 +74,10 @@ function ansi.getParser()
                         buffer = ''
 
                         state = 0
-                        goto xcontinue
+                        goto xcont
                     end
                 end
-                ::xcontinue::
+                ::xcont::
             end
             if #buffer > 0 and state == 0 then
                 if not ret then ret = {} end

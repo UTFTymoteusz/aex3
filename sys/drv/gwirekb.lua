@@ -28,11 +28,11 @@ function enable()
 
             if not kb then sleep(1000)
                 if chipset.Components.KB then kb = wire.getWirelink(chipset.Components.KB) end
-                goto xcontinue
+                goto xcont
             end
 
             act = kb.ActiveKeys
-            if not act then sleep(1000) goto xcontinue end
+            if not act then sleep(1000) goto xcont end
 
             ckeys = {}
 
@@ -46,7 +46,7 @@ function enable()
                 if not ckeys[k] then kb_t:keyRelease(k) end
             end
             bkeys = table.copy(ckeys)
-            ::xcontinue::
+            ::xcont::
         end
     end)
     return true

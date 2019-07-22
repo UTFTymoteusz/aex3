@@ -12,23 +12,23 @@ if sys.fs_exists('/cfg/fstab') then
 
     for k, v in pairs(string.split(str, '\n')) do
         v = string.trim(v)
-        if   #v == 0   then goto xcontinue end
-        if v[1] == '#' then goto xcontinue end
+        if   #v == 0   then goto xcont end
+        if v[1] == '#' then goto xcont end
 
         local exp = string.split(v, ' ')
         if #exp ~= 2 then
             tty.writeln('Line ' .. k .. ': Invalid amount of arguments')
-            goto xcontinue
+            goto xcont
         end
 
         local fd = sys.fs_open(exp[1], 'r')
-        if        not fd        then tty.writeln('Line ' .. k .. ': ' .. v .. ' not found')                goto xcontinue end
-        if fd.type ~= 'storage' then tty.writeln('Line ' .. k .. ': ' .. v .. ' is not an storage device') goto xcontinue end
+        if        not fd        then tty.writeln('Line ' .. k .. ': ' .. v .. ' not found')                goto xcont end
+        if fd.type ~= 'storage' then tty.writeln('Line ' .. k .. ': ' .. v .. ' is not an storage device') goto xcont end
 
         sys.fs_mount(exp[1], exp[2])
         tty.writeln('Mounted ' .. exp[1] .. ' at ' .. exp[2])
 
-        ::xcontinue::
+        ::xcont::
     end
 else tty.writeln('/cfg/fstab not found') end
 

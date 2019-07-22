@@ -255,11 +255,11 @@ if add_drivers then
 
     for k, v in pairs(string.split(add_drivers, '\n')) do
         v = string.trim(v)
-        if   #v == 0   then goto xcontinue end
-        if v[1] == '#' then goto xcontinue end
+        if   #v == 0   then goto xcont end
+        if v[1] == '#' then goto xcont end
     
         loadDriver(v)
-        ::xcontinue::
+        ::xcont::
     end
     tty_i.writeln(log.ok() .. 'Additional drivers loaded')
 end
@@ -283,6 +283,9 @@ loadModuleSafe('/sys/core/sig.sys')
 tty_i.writeln(log.ok() .. 'Core modules loaded')
 tty_i.writeln('')
 
+tty_i.setAnsi(loadSafe(readFile('/lib/ansi.lib')).getParser())
+tty_i.writeln(log.ok() .. 'tty0 ANSI reloaded')
+
 local envinit_p = readFile('/sys/envinit.p/' .. boot_kind .. '.lib')
 if envinit_p then
     loadSafe(envinit_p)
@@ -297,10 +300,10 @@ sys.thread_create(function()
         waitOne()
 
         keys = sys.input_get_keys()
-        if not keys then goto xcontinue end
+        if not keys then goto xcont end
 
         tty_input_buffer = tty_input_buffer .. string.char(unpack(keys))
-        ::xcontinue::
+        ::xcont::
     end
 end)
 tty_i.writeln(log.ok() .. '/dev/tty0 input routine started')

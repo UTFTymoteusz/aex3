@@ -18,32 +18,32 @@ local fds = {}
 io.writeln('Using devices defined in /cfg/init/tty')
 for k, v in pairs(fs.readln('/cfg/init/tty')) do
     v = string.trim(v)
-    if   #v == 0   then goto xcontinue end
-    if v[1] == '#' then goto xcontinue end
+    if   #v == 0   then goto xcont end
+    if v[1] == '#' then goto xcont end
 
     if not fs.exists(v) then
         io.writeln('Line ' .. k .. ': ' .. v .. ' not found')
-        goto xcontinue
+        goto xcont
     end 
     local fd = fs.open(v, 'rw')
 
     if fd.type ~= 'tty' then
         io.writeln('Line ' .. k .. ': ' .. v .. ' is not an tty')
     end
-    ::xcontinue::
+    ::xcont::
 end
 for k, v in pairs(fs.readln('/cfg/init/tty')) do
     v = string.trim(v)
-    if   #v == 0   then goto xcontinue end
-    if v[1] == '#' then goto xcontinue end
+    if   #v == 0   then goto xcont end
+    if v[1] == '#' then goto xcont end
 
     if not fs.exists(v) then
-        goto xcontinue
+        goto xcont
     end
     local fd = fs.open(v, 'rw')
 
     if fd.type ~= 'tty' then
-        goto xcontinue
+        goto xcont
     end
     local np = proc.create('/bin/login.lua')
     np.stdin:bind(fd)
@@ -56,7 +56,7 @@ for k, v in pairs(fs.readln('/cfg/init/tty')) do
     srv[v] = np
     fds[v] = fd
 
-    ::xcontinue::
+    ::xcont::
 end
 while true do
     sleep(1000)
