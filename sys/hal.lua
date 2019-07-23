@@ -138,7 +138,16 @@ elseif boot_kind == 'gmod_rh_sf' then
             return (hook.runRemote(drive[1], 'hddaccess', drive[2], 7, path)[1] or {})[1]
         end,
         get_all_ids = function()
-            return table.getKeys(drives)
+            local keybois = table.getKeys(drives)
+            local ret = {}
+
+            for k, v in pairs(keybois) do
+
+                if #drives[v] > 0 then
+                    ret[#ret + 1] = v
+                end
+            end
+            return ret
         end,
     }
     local start = timer.systime()
